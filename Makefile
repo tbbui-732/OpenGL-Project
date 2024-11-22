@@ -2,7 +2,7 @@ CC 			= clang++
 CXXFLAGS 	= -std=c++17 -Wall -Iinclude
 LDFLAGS 	= -lglfw -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 SRC 		= src/main.cpp src/glad.c
-OBJ 		= $(SRC:.cpp=.o)
+OBJ 		= src/main.o src/glad.o
 TARGET 		= OpenGLApp
 
 all: $(TARGET)
