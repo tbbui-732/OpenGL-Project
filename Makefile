@@ -6,8 +6,11 @@ DEBUGFLAGS  = -g -O0
 RELEASEFLAGS = -O2
 
 # Source and header files
-SRC 		= src/main.cpp src/glad.c
-OBJ 		= src/main.o src/glad.o
+# SRCPATH and SRCNAME need to be set!
+SRCPATH     = 1.getting_started/1.hello_triangle
+SRCNAME     = hello_triangle
+SRC 		= src/$(SRCPATH)/$(SRCNAME).cpp src/glad.c
+OBJ 		= src/$(SRCPATH)/$(SRCNAME).o 	src/glad.o
 HEADERS 	= $(wildcard include/*.h)
 TARGET 		= OpenGLApp
 
@@ -20,10 +23,11 @@ $(TARGET): $(OBJ)
 	$(CC) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Compile each source file into an object file
-src/%.o: src/%.cpp $(HEADERS)
+%.o: %.cpp $(HEADERS)
 	$(CC) $(CXXFLAGS) -c $< -o $@
 
-src/%.o: src/%.c $(HEADERS)
+# Compile glad's source file into object file
+%.o: %.c $(HEADERS)
 	$(CC) $(CXXFLAGS) -c $< -o $@
 
 # Clean up build artifacts
