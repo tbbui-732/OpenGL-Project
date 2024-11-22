@@ -1,5 +1,5 @@
-#include "../include/glad/glad.h"
-#include "../include/glfw/glfw3.h"
+#include "../../../include/glad/glad.h"
+#include "../../../include/glfw/glfw3.h"
 
 #include <iostream>
 
