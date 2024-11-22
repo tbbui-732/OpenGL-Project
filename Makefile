@@ -7,10 +7,10 @@ RELEASEFLAGS = -O2
 
 # Source and header files
 # SRCPATH and SRCNAME need to be set!
-SRCPATH     = 1.getting_started/1.hello_triangle
-SRCNAME     = hello_triangle
+SRCPATH     = 1.getting_started/7.textures
+SRCNAME     = textures
 SRC 		= src/$(SRCPATH)/$(SRCNAME).cpp src/glad.c
-OBJ 		= src/$(SRCPATH)/$(SRCNAME).o 	src/glad.o
+OBJ 		= src/$(SRCPATH)/$(SRCNAME).o src/glad.o
 HEADERS 	= $(wildcard include/*.h)
 TARGET 		= OpenGLApp
 
