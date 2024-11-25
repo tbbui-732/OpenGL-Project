@@ -58,11 +58,9 @@ int main() {
     //////////////////
     // build and compile our shader program
     // ------------------------------------
-    //std::cout << "Shader path: " << shaderPath << "\n";
     std::string vertexPath = shaderPath + "vertex.glsl";
     std::string fragmentPath = shaderPath + "fragment.glsl";
     Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
-
 
     ////////////////////
     ///// VERTICES /////
@@ -97,7 +95,6 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-
     ///////////////
     ///// EBO /////
     ///////////////
@@ -109,14 +106,14 @@ int main() {
     //////////////////////
     ///// ATTRIBUTES /////
     //////////////////////
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // positions
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // colors
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // color
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinates
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinate
     glEnableVertexAttribArray(2);
 
-
+    // Unbind buffer and vertex array to prevent accidental state changes
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -138,7 +135,7 @@ int main() {
         // ----
         ourShader.use();
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
