@@ -4,14 +4,18 @@
 
 #include <iostream>
 #include <filesystem>
+#include <string>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void logError(std::string comment);
 
-// settings
+//// settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/7.textures/shaders/";
+const std::string redText = "\033[1;31m";
+const std::string resetTextColor = "\033[0m";
 
 int main() {
     ////////////////
@@ -32,7 +36,7 @@ int main() {
     // --------------------
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
     if (window == NULL) {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        logError("Failed to create GLFW window");
         glfwTerminate();
         return -1;
     }
@@ -45,9 +49,20 @@ int main() {
     // load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        logError("Failed to initialize GLAD");
         return -1;
     }
+
+    //////////////////
+    ///// SHADER /////
+    //////////////////
+    // build and compile our shader program
+    // ------------------------------------
+    //std::cout << "Shader path: " << shaderPath << "\n";
+    std::string vertexPath = shaderPath + "vertex.glsl";
+    std::string fragmentPath = shaderPath + "fragment.glsl";
+    Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
+
 
     ////////////////////
     ///// VERTICES /////
@@ -63,8 +78,8 @@ int main() {
 	};
 
 	unsigned int indices[] = {
-		0,1,3, // first triangle
-		1,2,3  // second triangle
+		0, 1, 3, // first triangle
+		1, 2, 3  // second triangle
 	};
 
     ///////////////
@@ -74,13 +89,6 @@ int main() {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    //////////////////////
-    ///// ATTRIBUTES /////
-    //////////////////////
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // positions
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // colors
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinates
-
     ///////////////
     ///// VBO /////
     ///////////////
@@ -88,6 +96,7 @@ int main() {
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
 
     ///////////////
     ///// EBO /////
@@ -97,15 +106,19 @@ int main() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    //////////////////
-    ///// SHADER /////
-    //////////////////
-    // build and compile our shader program
-    // ------------------------------------
-    std::cout << "Shader path: " << shaderPath << "\n";
-    std::string vertexPath = shaderPath + "vertex.glsl";
-    std::string fragmentPath = shaderPath + "fragment.glsl";
-    Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
+    //////////////////////
+    ///// ATTRIBUTES /////
+    //////////////////////
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // positions
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // colors
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinates
+    glEnableVertexAttribArray(2);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
     ///////////////////////
     ///// RENDER LOOP /////
@@ -124,7 +137,7 @@ int main() {
         // draw
         // ----
         ourShader.use();
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -137,6 +150,7 @@ int main() {
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -155,4 +169,9 @@ void processInput(GLFWwindow *window) {
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+}
+
+// log out red text to standard output when there's an error
+void logError(std::string comment) {
+    std::cout << redText << comment << resetTextColor << std::endl;    
 }
