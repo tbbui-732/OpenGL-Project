@@ -9,5 +9,6 @@ out vec2 ourTexCoord;
 void main() 
 {
     gl_Position = vec4(aPos, 1.0); 
+    ourColor = aColor;
     ourTexCoord = aTexCoord;
 }
