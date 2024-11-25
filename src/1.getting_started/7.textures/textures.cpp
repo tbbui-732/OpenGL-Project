@@ -1,6 +1,7 @@
 #include "../../../include/glad/glad.h"
 #include "../../../include/glfw/glfw3.h"
 #include "../../../include/learnopengl/shader.h"
+#include "../../../include/stb_image/stb_image.h"
 
 #include <iostream>
 #include <filesystem>
@@ -14,6 +15,7 @@ void logError(std::string comment);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/7.textures/shaders/";
+const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
 const std::string redText = "\033[1;31m";
 const std::string resetTextColor = "\033[0m";
 
@@ -61,6 +63,36 @@ int main() {
     std::string vertexPath = shaderPath + "vertex.glsl";
     std::string fragmentPath = shaderPath + "fragment.glsl";
     Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
+
+    ////////////////////
+    ///// TEXTURES /////
+    ////////////////////
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+   
+    // repeat on wrap
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // linear filter when magnifying/minifying
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // load image
+    int width, height, nrChannels;
+    std::string containerPath = resourcesPath + "container.jpg";
+    unsigned char *data = stbi_load(containerPath.c_str(), &width, &height, &nrChannels, 0);
+
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        logError("Unable to load container.jpg");
+    }
+
+    // free image data
+    stbi_image_free(data);
 
     ////////////////////
     ///// VERTICES /////
@@ -134,6 +166,7 @@ int main() {
         // draw
         // ----
         ourShader.use();
+        glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
 
