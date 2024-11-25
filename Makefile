@@ -9,8 +9,8 @@ RELEASEFLAGS = -O2
 # SRCPATH and SRCNAME need to be set!
 SRCPATH     = 1.getting_started/7.textures
 SRCNAME     = textures
-SRC 		= src/$(SRCPATH)/$(SRCNAME).cpp src/glad.c
-OBJ 		= src/$(SRCPATH)/$(SRCNAME).o src/glad.o
+SRC 		= src/$(SRCPATH)/$(SRCNAME).cpp src/glad.c src/stb_image.c
+OBJ 		= src/$(SRCPATH)/$(SRCNAME).o src/glad.o src/stb_image.o
 HEADERS 	= $(wildcard include/*.h)
 TARGET 		= OpenGLApp
 
@@ -26,7 +26,7 @@ $(TARGET): $(OBJ)
 %.o: %.cpp $(HEADERS)
 	$(CC) $(CXXFLAGS) -c $< -o $@
 
-# Compile glad's source file into object file
+# Compile glad's and stb_image's source file into object file
 %.o: %.c $(HEADERS)
 	$(CC) $(CXXFLAGS) -c $< -o $@
 
