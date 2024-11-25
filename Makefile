@@ -7,8 +7,8 @@ RELEASEFLAGS = -O2
 
 # Source and header files
 # SRCPATH and SRCNAME need to be set!
-SRCPATH     = 1.getting_started/7.textures
-SRCNAME     = textures
+SRCPATH     = 1.getting_started/8.transformations
+SRCNAME     = transform
 SRC 		= src/$(SRCPATH)/$(SRCNAME).cpp src/glad.c src/stb_image.c
 OBJ 		= src/$(SRCPATH)/$(SRCNAME).o src/glad.o src/stb_image.o
 HEADERS 	= $(wildcard include/*.h)
