@@ -3,6 +3,7 @@
 #include "../../../include/learnopengl/shader.h"
 #include "../../../include/stb_image/stb_image.h"
 
+#include <cmath>
 #include <iostream>
 #include <filesystem>
 #include <string>
@@ -11,13 +12,16 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void logError(std::string comment);
 
-//// settings
+// settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/7.textures/shaders/";
 const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
 const std::string redText = "\033[1;31m";
 const std::string resetTextColor = "\033[0m";
+
+// mix value for color opacity
+float mixValue = 0.0;
 
 int main() {
     ////////////////
@@ -174,6 +178,7 @@ int main() {
 
         // draw
         // ----
+        ourShader.setFloat("mixValue", mixValue);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glActiveTexture(GL_TEXTURE1);
@@ -205,6 +210,15 @@ int main() {
 void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        mixValue -= 0.01;
+        mixValue = (mixValue < 0.0) ? 0.0 : mixValue;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        mixValue += 0.01;
+        mixValue = (mixValue > 1.0) ? 1.0 : mixValue;
+    }
+        
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
