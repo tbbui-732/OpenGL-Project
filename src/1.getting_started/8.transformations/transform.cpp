@@ -169,9 +169,10 @@ int main() {
     ////////////////////
     ///// MATRICES /////
     ////////////////////
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f)); // uniform scale 0.5
-    trans = glm::rotate(trans, glm::radians(75.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate 90 degrees CCW around z-axis
+    glm::mat4 trans(1.0f);
+    trans = glm::scale(trans, glm::vec3(0.75f, 0.75f, 0.75f)); // uniform scale 0.5
+    trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+    trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
 
     ///////////////////////
