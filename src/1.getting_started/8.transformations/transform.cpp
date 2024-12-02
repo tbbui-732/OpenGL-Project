@@ -2,8 +2,6 @@
 #include "../../../include/glfw/glfw3.h"
 #include "../../../include/learnopengl/shader.h"
 #include "../../../include/stb_image/stb_image.h"
-#include "../../../include/glm/glm.hpp"
-#include "../../../include/glm/gtc/matrix_transform.hpp"
 #include "../../../include/glm/gtc/type_ptr.hpp"
 
 #include <iostream>
@@ -19,8 +17,6 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/8.transformations/shaders/";
 const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
-const std::string redText = "\033[1;31m";
-const std::string resetTextColor = "\033[0m";
 
 int main() {
     ////////////////
@@ -231,5 +227,5 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 
 // log out red text to standard output when there's an error
 void logError(std::string comment) {
-    std::cout << redText << comment << resetTextColor << std::endl;    
+    std::cout << "\033[1;31m" << comment << "\033[0m" << std::endl;    
 }
