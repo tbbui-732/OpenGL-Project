@@ -162,15 +162,6 @@ int main() {
     ourShader.setInt("texture1", 0); // update fragment shader's uniform value
     ourShader.setInt("texture2", 1);
 
-    ////////////////////
-    ///// MATRICES /////
-    ////////////////////
-    glm::mat4 trans(1.0f);
-    trans = glm::scale(trans, glm::vec3(0.75f, 0.75f, 0.75f)); // uniform scale 0.5
-    trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-    trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
-    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
-
     ///////////////////////
     ///// RENDER LOOP /////
     ///////////////////////
@@ -184,13 +175,26 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw
-        // ----
+        // bind textures to corresponding texture units
+        // -------------
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textures[1]);
 
+        // create transformations
+        // ----------------------
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
+
+        // send transformation to shader
+        // -----------------------------
+        ourShader.use();
+        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+
+        // draw
+        // ----
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
 
