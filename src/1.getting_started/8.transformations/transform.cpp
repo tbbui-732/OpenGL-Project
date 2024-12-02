@@ -22,9 +22,6 @@ const std::string resourcesPath = std::filesystem::current_path().string() + "/r
 const std::string redText = "\033[1;31m";
 const std::string resetTextColor = "\033[0m";
 
-// mix value for color opacity
-float mixValue = 0.0;
-
 int main() {
     ////////////////
     ///// GLFW /////
@@ -68,8 +65,6 @@ int main() {
     // ------------------------------------
     std::string vertexPath = shaderPath + "vertex.glsl";
     std::string fragmentPath = shaderPath + "fragment.glsl";
-    std::cout << vertexPath << std::endl;
-    std::cout << fragmentPath << std::endl;
     Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
 
     ////////////////////
@@ -163,20 +158,25 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    ////////////////////
-    ///// MATRICES /////
-    ////////////////////
-    auto trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate 90 degrees CCW around z-axis
-    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f)); // uniform scale 0.5
-
     ///////////////////////
-    ///// RENDER LOOP /////
+    ///// BIND SHADER /////
     ///////////////////////
     // -----------
     ourShader.use();
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
+
+    ////////////////////
+    ///// MATRICES /////
+    ////////////////////
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f)); // uniform scale 0.5
+    trans = glm::rotate(trans, glm::radians(75.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate 90 degrees CCW around z-axis
+    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+
+    ///////////////////////
+    ///// RENDER LOOP /////
+    ///////////////////////
     while (!glfwWindowShouldClose(window)) {
         // input
         // -----
@@ -189,7 +189,6 @@ int main() {
 
         // draw
         // ----
-        ourShader.setFloat("mixValue", mixValue);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glActiveTexture(GL_TEXTURE1);
@@ -221,15 +220,6 @@ int main() {
 void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        mixValue -= 0.01;
-        mixValue = (mixValue < 0.0) ? 0.0 : mixValue;
-    }
-    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        mixValue += 0.01;
-        mixValue = (mixValue > 1.0) ? 1.0 : mixValue;
-    }
-        
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
