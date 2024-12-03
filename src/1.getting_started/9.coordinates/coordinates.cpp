@@ -105,12 +105,44 @@ int main() {
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-		// positions		  // colors		      // texture coords
-		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,           // top right
-		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,           // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,           // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f	        // top left
-	};
+         // positions           // texture coords
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,    1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,    1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,    1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,    1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,    1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,    1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,    0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,    1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,    1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,    1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,    0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,    1.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,    1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,    1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,    1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,    1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,    1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,    1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,    0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,    0.0f, 1.0f
+    };
 
 	unsigned int indices[] = {
 		0, 1, 3, // first triangle
@@ -120,28 +152,24 @@ int main() {
     //////////////////////
     ///// INITIALIZE /////
     //////////////////////
-    unsigned int VAO, VBO, EBO;
+    unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO); 
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
     //////////////////
     ///// OBJECT /////
     //////////////////
-    // create and bind vao, vbo, and ebo
+    // create and bind vao and vbo
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // set attribute pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*) 0); // position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // color
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*) (3*sizeof(float))); // texture coordinate
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinate
-    glEnableVertexAttribArray(2);
 
     // unbind to prevent accidental state changes
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -158,10 +186,6 @@ int main() {
     ///////////////////////////////////
     ///// TRANSFORMATION MATRICES /////
     ///////////////////////////////////
-    // model matrix
-    glm::mat4 model(1.0f);
-    model = glm::rotate(model, glm::degrees(-35.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // tilt 45 degrees around x-axis
-
     // view matrix
     glm::mat4 view(1.0f);
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // move camera back a little bit
@@ -171,7 +195,6 @@ int main() {
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
 
     // send matrices to shader
-    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -195,11 +218,17 @@ int main() {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textures[1]);
 
+        // rotate model matrix
+        glm::mat4 model(1.0f);
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), 
+                                glm::vec3(0.5f, 1.0f, 1.0f));
+        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
         // draw element
         // ------------
         ourShader.use();
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -211,7 +240,6 @@ int main() {
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
