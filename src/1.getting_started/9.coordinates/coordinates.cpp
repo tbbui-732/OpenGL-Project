@@ -14,7 +14,7 @@ void logError(std::string comment);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/8.transformations/shaders/";
+const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/9.coordinates/shaders/";
 const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
 
 int main() {
