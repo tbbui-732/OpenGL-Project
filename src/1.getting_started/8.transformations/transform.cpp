@@ -2,6 +2,7 @@
 #include "../../../include/glfw/glfw3.h"
 #include "../../../include/learnopengl/shader.h"
 #include "../../../include/stb_image/stb_image.h"
+#include "../../../include/glm/gtc/type_ptr.hpp"
 
 #include <iostream>
 #include <filesystem>
@@ -16,11 +17,6 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/8.transformations/shaders/";
 const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
-const std::string redText = "\033[1;31m";
-const std::string resetTextColor = "\033[0m";
-
-// mix value for color opacity
-float mixValue = 0.0;
 
 int main() {
     ////////////////
@@ -65,8 +61,6 @@ int main() {
     // ------------------------------------
     std::string vertexPath = shaderPath + "vertex.glsl";
     std::string fragmentPath = shaderPath + "fragment.glsl";
-    std::cout << vertexPath << std::endl;
-    std::cout << fragmentPath << std::endl;
     Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
 
     ////////////////////
@@ -88,14 +82,14 @@ int main() {
     unsigned char *data;
     
     // load container texture
-    glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, textures[0]); // activate texture unit
+    glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, textures[0]); // activate texture unit 1
     data = stbi_load((resourcesPath + "container.jpg").c_str(), &width, &height, &nrChannels, 0);
     if (!data) logError("Unable to load container.jpg");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     // load awesome face texture
-    glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, textures[1]);
+    glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, textures[1]); // activate texture unit 2
     stbi_set_flip_vertically_on_load(true);
     data = stbi_load((resourcesPath + "awesomeface.png").c_str(), &width, &height, &nrChannels, 0);
     if (!data) logError("Unable to load awesomeface.jpg");
@@ -123,32 +117,25 @@ int main() {
 		1, 2, 3  // second triangle
 	};
 
-    ///////////////
-    ///// VAO /////
-    ///////////////
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    //////////////////////
+    ///// INITIALIZE /////
+    //////////////////////
+    unsigned int VAO[2], VBO[2], EBO[2];
+    glGenVertexArrays(2, VAO); 
+    glGenBuffers(2, VBO);
+    glGenBuffers(2, EBO);
 
-    ///////////////
-    ///// VBO /////
-    ///////////////
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    ///////////////////////////
+    ///// FIRST CONTAINER /////
+    ///////////////////////////
+    // create and bind vao, vbo, and ebo
+    glBindVertexArray(VAO[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    ///////////////
-    ///// EBO /////
-    ///////////////
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    //////////////////////
-    ///// ATTRIBUTES /////
-    //////////////////////
+    // set attribute pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // position
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // color
@@ -156,17 +143,39 @@ int main() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinate
     glEnableVertexAttribArray(2);
 
-    // Unbind buffer and vertex array to prevent accidental state changes
+    ////////////////////////////
+    ///// SECOND CONTAINER /////
+    ////////////////////////////
+    // create and bind vao, vbo, and ebo
+    glBindVertexArray(VAO[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // set attribute pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // position
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // color
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinate
+    glEnableVertexAttribArray(2);
+
+    // unbind to prevent accidental state changes
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     ///////////////////////
-    ///// RENDER LOOP /////
+    ///// BIND SHADER /////
     ///////////////////////
     // -----------
     ourShader.use();
-    ourShader.setInt("texture1", 0);
+    ourShader.setInt("texture1", 0); // update fragment shader's uniform value
     ourShader.setInt("texture2", 1);
+
+    ///////////////////////
+    ///// RENDER LOOP /////
+    ///////////////////////
     while (!glfwWindowShouldClose(window)) {
         // input
         // -----
@@ -177,15 +186,39 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw
-        // ----
-        ourShader.setFloat("mixValue", mixValue);
+        // bind textures to corresponding texture units
+        // -------------
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textures[1]);
 
-        glBindVertexArray(VAO);
+        // create transformations
+        // ----------------------
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
+
+        // send transformation to shader
+        // -----------------------------
+        ourShader.use();
+        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+
+        // draw first element
+        // ----
+        glBindVertexArray(VAO[0]);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
+
+        // create second transformation and send it
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+        trans = glm::rotate(trans, -(float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
+        trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f)); // rotate around z-axis based on time
+        glBindVertexArray(VAO[1]);
+        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+
+        // draw second element
+        // ----
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -196,9 +229,9 @@ int main() {
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(2, VAO);
+    glDeleteBuffers(2, VBO);
+    glDeleteBuffers(2, EBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -211,15 +244,6 @@ int main() {
 void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        mixValue -= 0.01;
-        mixValue = (mixValue < 0.0) ? 0.0 : mixValue;
-    }
-    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        mixValue += 0.01;
-        mixValue = (mixValue > 1.0) ? 1.0 : mixValue;
-    }
-        
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -230,5 +254,5 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 
 // log out red text to standard output when there's an error
 void logError(std::string comment) {
-    std::cout << redText << comment << resetTextColor << std::endl;    
+    std::cout << "\033[1;31m" << comment << "\033[0m" << std::endl;    
 }

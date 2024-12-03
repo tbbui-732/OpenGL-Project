@@ -20,15 +20,15 @@ all: $(TARGET)
 
 # Link the object files to create the executable
 $(TARGET): $(OBJ)
-	$(CC) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CC) $(CXXFLAGS) $(DEBUGFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Compile each source file into an object file
 %.o: %.cpp $(HEADERS)
-	$(CC) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(CXXFLAGS) $(DEBUGFLAGS) -c $< -o $@
 
 # Compile glad's and stb_image's source file into object file
 %.o: %.c $(HEADERS)
-	$(CC) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(CXXFLAGS) $(DEBUGFLAGS) -c $< -o $@
 
 # Clean up build artifacts
 .PHONY: clean
