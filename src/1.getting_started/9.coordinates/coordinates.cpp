@@ -2,6 +2,7 @@
 #include "../../../include/glfw/glfw3.h"
 #include "../../../include/learnopengl/shader.h"
 #include "../../../include/stb_image/stb_image.h"
+#include "../../../include/glm/gtc/type_ptr.hpp"
 
 #include <iostream>
 #include <filesystem>
@@ -153,6 +154,26 @@ int main() {
     ourShader.use();
     ourShader.setInt("texture1", 0); // update fragment shader's uniform value
     ourShader.setInt("texture2", 1);
+
+    //////////////////////////
+    ///// 3D COORDINATES /////
+    //////////////////////////
+    // model matrix
+    glm::mat4 model(1.0f);
+    model = glm::rotate(model, glm::degrees(-35.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // tilt 45 degrees around x-axis
+
+    // view matrix
+    glm::mat4 view(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // move camera back a little bit
+
+    // project matrix
+    glm::mat4 projection(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
+
+    // send matrices to shader
+    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     ///////////////////////
     ///// RENDER LOOP /////
