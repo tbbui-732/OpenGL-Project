@@ -2,7 +2,6 @@
 #include "../../../include/glfw/glfw3.h"
 #include "../../../include/learnopengl/shader.h"
 #include "../../../include/stb_image/stb_image.h"
-#include "../../../include/glm/gtc/type_ptr.hpp"
 
 #include <iostream>
 #include <filesystem>
