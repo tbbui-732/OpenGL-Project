@@ -119,36 +119,18 @@ int main() {
     //////////////////////
     ///// INITIALIZE /////
     //////////////////////
-    unsigned int VAO[2], VBO[2], EBO[2];
-    glGenVertexArrays(2, VAO); 
-    glGenBuffers(2, VBO);
-    glGenBuffers(2, EBO);
+    unsigned int VAO, VBO, EBO;
+    glGenVertexArrays(1, &VAO); 
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-    ///////////////////////////
-    ///// FIRST CONTAINER /////
-    ///////////////////////////
+    //////////////////
+    ///// OBJECT /////
+    //////////////////
     // create and bind vao, vbo, and ebo
-    glBindVertexArray(VAO[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // set attribute pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) 0); // position
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (3*sizeof(float))); // color
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*) (6*sizeof(float))); // texture coordinate
-    glEnableVertexAttribArray(2);
-
-    ////////////////////////////
-    ///// SECOND CONTAINER /////
-    ////////////////////////////
-    // create and bind vao, vbo, and ebo
-    glBindVertexArray(VAO[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -194,30 +176,18 @@ int main() {
 
         // create transformations
         // ----------------------
-        glm::mat4 trans(1.0f);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
+        //glm::mat4 trans(1.0f);
+        //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        //trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
 
         // send transformation to shader
         // -----------------------------
         ourShader.use();
-        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+        //glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
 
         // draw first element
         // ----
-        glBindVertexArray(VAO[0]);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
-
-        // create second transformation and send it
-        trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
-        trans = glm::rotate(trans, -(float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // rotate around z-axis based on time
-        trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f)); // rotate around z-axis based on time
-        glBindVertexArray(VAO[1]);
-        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
-
-        // draw second element
-        // ----
+        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // rectangle
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -228,9 +198,9 @@ int main() {
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(2, VAO);
-    glDeleteBuffers(2, VBO);
-    glDeleteBuffers(2, EBO);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
