@@ -198,6 +198,11 @@ int main() {
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
+    /////////////////////////
+    ///// DEPTH TESTING /////
+    /////////////////////////
+    glEnable(GL_DEPTH_TEST); 
+
     ///////////////////////
     ///// RENDER LOOP /////
     ///////////////////////
@@ -209,7 +214,7 @@ int main() {
         // set background
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: What does this do?
 
         // bind textures to corresponding texture units
         // -------------
