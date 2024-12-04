@@ -82,14 +82,18 @@ int main() {
     unsigned char *data;
     
     // load container texture
-    glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, textures[0]); // activate texture unit 1
+    glActiveTexture(GL_TEXTURE0); // activate texture unit 1
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+
     data = stbi_load((resourcesPath + "container.jpg").c_str(), &width, &height, &nrChannels, 0);
     if (!data) logError("Unable to load container.jpg");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     // load awesome face texture
-    glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, textures[1]); // activate texture unit 2
+    glActiveTexture(GL_TEXTURE1); // activate texture unit 2
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+
     stbi_set_flip_vertically_on_load(true);
     data = stbi_load((resourcesPath + "awesomeface.png").c_str(), &width, &height, &nrChannels, 0);
     if (!data) logError("Unable to load awesomeface.jpg");
