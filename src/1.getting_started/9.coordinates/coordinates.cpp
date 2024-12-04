@@ -198,7 +198,7 @@ int main() {
 
     // project matrix
     glm::mat4 projection(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
+    projection = glm::perspective(glm::radians(55.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
 
     // send matrices to shader
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
