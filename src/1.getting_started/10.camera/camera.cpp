@@ -197,15 +197,15 @@ int main() {
     ///// TRANSFORMATION MATRICES /////
     ///////////////////////////////////
     // view matrix
-    glm::mat4 view(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // move camera back a little bit
+    //glm::mat4 view(1.0f);
+    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // move camera back a little bit
 
-    // project matrix
+    //// project matrix
     glm::mat4 projection(1.0f);
     projection = glm::perspective(glm::radians(55.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
 
-    // send matrices to shader
-    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    //// send matrices to shader
+    //glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     /////////////////////////
@@ -229,9 +229,6 @@ int main() {
     // up axis
     glm::vec3 cameraUp = glm::cross(cameraReverseDirection, cameraRight);
 
-    // TODO: Left off at 10.2 "Look At"
-
-
     ///////////////////////
     ///// RENDER LOOP /////
     ///////////////////////
@@ -251,6 +248,18 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textures[1]);
+
+        // camera
+        // ------
+        // look-at matrix
+        const float radius = 10.0f;
+        float camX = sin(glfwGetTime()) * radius;
+        float camZ = cos(glfwGetTime()) * radius;
+        glm::mat4 view;
+        view = glm::lookAt(glm::vec3(camX, 0.0f, camZ),
+                           glm::vec3(0.0f, 0.0f, 0.0f),
+                           glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         // draw element
         // ------------
