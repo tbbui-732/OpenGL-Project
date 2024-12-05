@@ -12,6 +12,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void logError(std::string comment);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -25,8 +26,14 @@ glm::vec3 cameraFront   = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp      = glm::vec3(0.0f, 1.0f, 0.0f);
 float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f; // time of last frame
+
+// camera direction
+bool firstMouse = true;
 float pitch = 0.0f;
 float yaw = 0.0f;
+float lastX = 400.0f; // center of the screen (800x600 display)
+float lastY = 300.0f;
+
 
 int main() {
     ////////////////
@@ -53,6 +60,8 @@ int main() {
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // hide mouse and capture its movement
+    glfwSetCursorPosCallback(window, mouse_callback);
 
     ////////////////
     ///// GLAD /////
@@ -219,11 +228,6 @@ int main() {
     //////////////////
     ///// CAMERA /////
     //////////////////
-    // direction camera looks at
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
     //// right axis
     //glm::vec3 cameraRight = glm::normalize( glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraReverseDirection) );
@@ -323,4 +327,40 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 // log out red text to standard output when there's an error
 void logError(std::string comment) {
     std::cout << "\033[1;31m" << comment << "\033[0m" << std::endl;    
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) { // xpos and ypos are the mouse's current position
+    // circumvent jumpy mouse 
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }    
+
+    // calculate the offset
+    float xoffset = xpos - lastX;
+    float yoffset = ypos - lastY;
+    lastX = xpos;
+    lastY = ypos;
+
+    const float sensitivity = 0.08f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    // update pitch and yaw values
+    yaw += xoffset;
+    pitch -= yoffset;
+
+    // constraints
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    // calculate the camera direction
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
 }
