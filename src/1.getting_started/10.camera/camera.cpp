@@ -25,6 +25,8 @@ glm::vec3 cameraFront   = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp      = glm::vec3(0.0f, 1.0f, 0.0f);
 float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f; // time of last frame
+float pitch = 0.0f;
+float yaw = 0.0f;
 
 int main() {
     ////////////////
@@ -204,16 +206,9 @@ int main() {
     ///////////////////////////////////
     ///// TRANSFORMATION MATRICES /////
     ///////////////////////////////////
-    // view matrix
-    //glm::mat4 view(1.0f);
-    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // move camera back a little bit
-
-    //// project matrix
+    //// projection matrix
     glm::mat4 projection(1.0f);
     projection = glm::perspective(glm::radians(55.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
-
-    //// send matrices to shader
-    //glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     /////////////////////////
@@ -225,8 +220,10 @@ int main() {
     ///// CAMERA /////
     //////////////////
     // direction camera looks at
-    //glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f); // world origin
-    //glm::vec3 cameraReverseDirection = glm::normalize(cameraPos - cameraTarget);
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
     //// right axis
     //glm::vec3 cameraRight = glm::normalize( glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraReverseDirection) );
