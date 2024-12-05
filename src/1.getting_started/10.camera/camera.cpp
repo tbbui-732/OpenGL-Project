@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <ostream>
 #include <string>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -22,6 +23,8 @@ const std::string resourcesPath = std::filesystem::current_path().string() + "/r
 glm::vec3 cameraPos     = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront   = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp      = glm::vec3(0.0f, 1.0f, 0.0f);
+float deltaTime = 0.0f; // time between current frame and last frame
+float lastFrame = 0.0f; // time of last frame
 
 int main() {
     ////////////////
@@ -235,6 +238,11 @@ int main() {
     ///// RENDER LOOP /////
     ///////////////////////
     while (!glfwWindowShouldClose(window)) {
+        // update delta time
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         // input
         // -----
         processInput(window);
@@ -294,7 +302,7 @@ void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    const float cameraSpeed = 0.05f;
+    const float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -303,8 +311,6 @@ void processInput(GLFWwindow *window) {
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-    std::cout << cameraPos.x << " " << cameraPos.y << " " << cameraPos.z << "\n";
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
