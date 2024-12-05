@@ -18,6 +18,11 @@ const unsigned int SCR_HEIGHT = 600;
 const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/10.camera/shaders/";
 const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
 
+// camera
+glm::vec3 cameraPos     = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront   = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp      = glm::vec3(0.0f, 1.0f, 0.0f);
+
 int main() {
     ////////////////
     ///// GLFW /////
@@ -216,18 +221,15 @@ int main() {
     //////////////////
     ///// CAMERA /////
     //////////////////
-    // camera position
-    glm::vec3 cameraPos(0.0f, 0.0f, 3.0f);
-
     // direction camera looks at
-    glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f); // world origin
-    glm::vec3 cameraReverseDirection = glm::normalize(cameraPos - cameraTarget);
+    //glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f); // world origin
+    //glm::vec3 cameraReverseDirection = glm::normalize(cameraPos - cameraTarget);
 
-    // right axis
-    glm::vec3 cameraRight = glm::normalize( glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraReverseDirection) );
+    //// right axis
+    //glm::vec3 cameraRight = glm::normalize( glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraReverseDirection) );
 
-    // up axis
-    glm::vec3 cameraUp = glm::cross(cameraReverseDirection, cameraRight);
+    //// up axis
+    //glm::vec3 cameraUp = glm::cross(cameraReverseDirection, cameraRight);
 
     ///////////////////////
     ///// RENDER LOOP /////
@@ -251,14 +253,9 @@ int main() {
 
         // camera
         // ------
-        // look-at matrix
-        const float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
+        // view matrix
         glm::mat4 view;
-        view = glm::lookAt(glm::vec3(camX, 0.0f, camZ),  // camera
-                           glm::vec3(0.0f, 0.0f, 0.0f),  // target
-                           glm::vec3(0.0f, 1.0f, 0.0f)); // up
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         // draw element
@@ -296,6 +293,18 @@ int main() {
 void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    const float cameraSpeed = 0.05f;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+    std::cout << cameraPos.x << " " << cameraPos.y << " " << cameraPos.z << "\n";
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
