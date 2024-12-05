@@ -213,6 +213,25 @@ int main() {
     /////////////////////////
     glEnable(GL_DEPTH_TEST); 
 
+    //////////////////
+    ///// CAMERA /////
+    //////////////////
+    // camera position
+    glm::vec3 cameraPos(0.0f, 0.0f, 3.0f);
+
+    // direction camera looks at
+    glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f); // world origin
+    glm::vec3 cameraReverseDirection = glm::normalize(cameraPos - cameraTarget);
+
+    // right axis
+    glm::vec3 cameraRight = glm::normalize( glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraReverseDirection) );
+
+    // up axis
+    glm::vec3 cameraUp = glm::cross(cameraReverseDirection, cameraRight);
+
+    // TODO: Left off at 10.2 "Look At"
+
+
     ///////////////////////
     ///// RENDER LOOP /////
     ///////////////////////
