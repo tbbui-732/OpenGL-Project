@@ -10,7 +10,8 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include <chrono>
+#include <utility>
+#include <vector>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -177,17 +178,22 @@ int main() {
         -0.5f,  0.5f, -0.5f,    0.0f, 1.0f
     };
 
-    glm::vec3 cubePositions[] = {
-        glm::vec3(  0.0f,  0.0f,  0.0f  ),
-        glm::vec3(  2.0f,  5.0f, -15.0f ),
-        glm::vec3( -1.5f, -2.2f, -2.5f  ),
-        glm::vec3( -3.8f, -2.0f, -12.3f ),
-        glm::vec3(  2.4f, -0.4f, -3.5f  ),
-        glm::vec3( -1.7f,  3.0f, -7.5f  ),
-        glm::vec3(  1.3f, -2.0f, -2.5f  ),
-        glm::vec3(  1.5f,  2.0f, -2.5f  ),
-        glm::vec3(  1.5f,  0.2f, -1.5f  ),
-    };
+
+    // Generate a bunch of random cube positions
+    int nCubePositions = 50;
+    std::pair<float, float> xRange = { -7.0f, 7.0f };
+    std::pair<float, float> yRange = { -7.0f, 7.0f };
+    std::pair<float, float> zRange = { -7.0f, 7.0f };
+    std::vector<glm::vec3> cubePositions; cubePositions.reserve(nCubePositions);
+
+    for (int i = 0; i < nCubePositions; i++) {
+        glm::vec3 newPos(
+                genRandFloat(xRange.first, xRange.second), 
+                genRandFloat(yRange.first, yRange.second), 
+                genRandFloat(zRange.first, zRange.second)
+                );
+        cubePositions.push_back(newPos);
+    }
 
     //////////////////////
     ///// INITIALIZE /////
@@ -282,10 +288,10 @@ int main() {
         ourShader.use();
         glBindVertexArray(VAO);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < nCubePositions; i++) {
             glm::mat4 model(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, glm::radians(20.0f * (i+1) * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = glm::rotate(model, glm::radians(5.0f * (i+1) * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
             ourShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
