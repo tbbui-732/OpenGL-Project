@@ -8,11 +8,15 @@
 #include <filesystem>
 #include <ostream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void logError(std::string comment);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
+float genRandFloat(float min, float max);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -36,6 +40,12 @@ float lastY = 300.0f;
 
 
 int main() {
+    //////////////////////////////
+    ///// PRE-INITIALIZATION /////
+    //////////////////////////////
+    // set random seed
+    srand(static_cast<unsigned int>(time(0)));
+
     ////////////////
     ///// GLFW /////
     ////////////////
@@ -363,4 +373,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) { // xpos and 
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(direction);
+}
+
+float genRandFloat(float min, float max) {
+    // Source: user "lastchance" - https://cplusplus.com/forum/general/242186/
+    return min + (max - min) * rand() / RAND_MAX;
 }
