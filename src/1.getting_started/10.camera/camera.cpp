@@ -17,6 +17,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void logError(std::string comment);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 float genRandFloat(float min, float max);
 
 // settings
@@ -31,6 +32,7 @@ glm::vec3 cameraFront   = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp      = glm::vec3(0.0f, 1.0f, 0.0f);
 float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f; // time of last frame
+float fov = 45.0f;
 
 // camera direction
 bool firstMouse = true;
@@ -73,6 +75,7 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // hide mouse and capture its movement
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     ////////////////
     ///// GLAD /////
@@ -228,28 +231,10 @@ int main() {
     ourShader.setInt("texture1", 0); // update fragment shader's uniform value
     ourShader.setInt("texture2", 1);
 
-    ///////////////////////////////////
-    ///// TRANSFORMATION MATRICES /////
-    ///////////////////////////////////
-    //// projection matrix
-    glm::mat4 projection(1.0f);
-    projection = glm::perspective(glm::radians(55.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
-    glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
     /////////////////////////
     ///// DEPTH TESTING /////
     /////////////////////////
     glEnable(GL_DEPTH_TEST); 
-
-    //////////////////
-    ///// CAMERA /////
-    //////////////////
-
-    //// right axis
-    //glm::vec3 cameraRight = glm::normalize( glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraReverseDirection) );
-
-    //// up axis
-    //glm::vec3 cameraUp = glm::cross(cameraReverseDirection, cameraRight);
 
     ///////////////////////
     ///// RENDER LOOP /////
@@ -282,6 +267,11 @@ int main() {
         glm::mat4 view;
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+        //// projection matrix
+        glm::mat4 projection(1.0f);
+        projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f); // 800x600, 0.1 to 100.0
+        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
         // draw element
         // ------------
@@ -379,6 +369,15 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) { // xpos and 
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(direction);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    float scrollSensitivity = 0.25f;
+    fov -= static_cast<float>(yoffset) * scrollSensitivity;
+    if (fov < 5.0f)
+        fov = 5.0f;
+    if (fov > 45.0f)
+        fov = 45.0f;
 }
 
 float genRandFloat(float min, float max) {
