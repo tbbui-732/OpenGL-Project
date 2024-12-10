@@ -1,3 +1,3 @@
-# LearnOpenGL - OSX
+# Make Build of LearnOpenGL
 
-Following along LearnOpenGL text but configured for OSX/Unix
+The Visual Studio build was a little finicky. Make really simplified the process for building on UNIX like systems.
