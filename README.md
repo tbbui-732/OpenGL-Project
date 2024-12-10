@@ -5,6 +5,9 @@ Welcome to my LearnOpenGL repository! This repo is dedicated to documenting and 
 ## About
 This repository serves as a collection of projects and experimentation from the LearnOpenGL text. It's a work-in-progress as I progress through each chapter.
 
+## Spinning Cubes and Camera
+This is ultimate culmination of Part 1. Please view it in the "camera" branch!
+
 ## Progress
 Currently, I have completed Part 1: Basics, which covers foundational graphics concepts.
 * Rendering a triangle
@@ -24,7 +27,8 @@ To run the project, you will need clang installed and please make sure you're ru
 ### How to Run
 1. Clone this repository
 2. Navigate to the project directory
-3. Build the project with make
+3. Update the makefile to target file you want to build. You'll need to change SRCPATH and SRCNAME!
+5. Build the project with make
 
 ## Acknowledgement
 Thanks so much to Joey de Vries for creating this amazing piece of resource!
