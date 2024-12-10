@@ -7,6 +7,7 @@ This repository serves as a collection of projects and experimentation from the 
 
 ## Spinning Cubes and Camera
 This is ultimate culmination of Part 1. Please view it in the "camera" branch!
+Here's a demonstration of it here: https://www.youtube.com/watch?v=1TYUth0FZec
 
 ## Progress
 Currently, I have completed Part 1: Basics, which covers foundational graphics concepts.
