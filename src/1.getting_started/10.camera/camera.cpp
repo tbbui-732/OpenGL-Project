@@ -21,8 +21,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 float genRandFloat(float min, float max);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 1200;
 const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/10.camera/shaders/";
 const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
 
@@ -150,7 +150,7 @@ int main() {
         -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
         -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,    1.0f, 0.0f,
+         1.5f, -0.5f,  0.5f,    1.0f, 0.0f,
          0.5f,  0.5f,  0.5f,    1.0f, 1.0f,
          0.5f,  0.5f,  0.5f,    1.0f, 1.0f,
         -0.5f,  0.5f,  0.5f,    0.0f, 1.0f,
@@ -180,7 +180,6 @@ int main() {
         -0.5f,  0.5f,  0.5f,    0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,    0.0f, 1.0f
     };
-
 
     // Generate a bunch of random cube positions
     int nCubePositions = 50;
