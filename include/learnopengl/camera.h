@@ -19,12 +19,6 @@ private:
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    // frames
-    float deltaTime = 0.0f;
-    float lastFrame = 0.0f;
-    float lastX;
-    float lastY;
-
     // camera settings
     float fov = 45.0f;
 
@@ -33,8 +27,15 @@ private:
     float yaw = 0.0f;
     float pitch = 0.0f;
 
+    // frames
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+    float lastX;
+    float lastY;
+
     // scene objects
     std::vector<glm::vec3> cubePositions; 
+
 
     /////////////////////
     ///// FUNCTIONS /////
