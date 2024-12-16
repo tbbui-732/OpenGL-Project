@@ -97,12 +97,30 @@ public:
         }
     }
 
-    void processMouseMovement(float xoffset, float yoffset, bool constraints) {
+    //void processMouseMovement(float xoffset, float yoffset, bool constraints) {
+    void processMouseMovement(float xpos, float ypos, bool pitchConstraint) {
+        // circumvent jumpy mouse 
+        if (firstMouse) {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }    
+
+        // calculate the offset
+        float xoffset = xpos - lastX;
+        float yoffset = ypos - lastY;
+        lastX = xpos;
+        lastY = ypos;
+
+        const float sensitivity = 0.08f;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
         // update pitch and yaw values
         yaw -= xoffset;
         pitch += yoffset;
 
-        if (constraints) {
+        if (pitchConstraint) {
             if (pitch > 89.0f)
                 pitch = 89.0f;
             if (pitch < -89.0f)
@@ -113,7 +131,6 @@ public:
     }
 
     void processScrollMovement(float yoffset, float sensitivity) {
-        // update fov
         fov -= static_cast<float>(yoffset) * sensitivity;
         if (fov < 5.0f)
             fov = 5.0f;
@@ -124,14 +141,11 @@ public:
     }
 
     glm::mat4 getViewMatrix() {
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        return view;
+        return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     }
 
     glm::mat4 getProjectionMatrix() {
-        glm::mat4 projection(1.0f);
-        projection = glm::perspective(glm::radians(fov), scrWidth / scrHeight, 0.1f, 100.0f);
-        return projection;
+        return glm::perspective(glm::radians(fov), scrWidth / scrHeight, 0.1f, 100.0f);
     }
 };
 
