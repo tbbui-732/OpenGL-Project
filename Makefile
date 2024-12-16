@@ -7,8 +7,8 @@ RELEASEFLAGS = -O2
 
 # Source and header files
 # SRCPATH and SRCNAME need to be set!
-SRCPATH     = 1.getting_started/9.coordinates
-SRCNAME     = coordinates
+SRCPATH     = 1.getting_started/10.camera
+SRCNAME     = main
 SRC 		= src/$(SRCPATH)/$(SRCNAME).cpp src/glad.c src/stb_image.c
 OBJ 		= src/$(SRCPATH)/$(SRCNAME).o src/glad.o src/stb_image.o
 HEADERS 	= $(wildcard include/*.h)
