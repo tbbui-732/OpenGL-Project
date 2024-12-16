@@ -7,6 +7,9 @@
 
 class Camera {
 private:
+    /////////////////////
+    ///// VARIABLES /////
+    /////////////////////
     // screen dimensions
     float scrWidth;
     float scrHeight;
@@ -29,6 +32,33 @@ private:
     bool firstMouse = true;
     float yaw = 0.0f;
     float pitch = 0.0f;
+
+    // scene objects
+    std::vector<glm::vec3> cubePositions; 
+
+    /////////////////////
+    ///// FUNCTIONS /////
+    /////////////////////
+    float randFloat(float min, float max) {
+        // Source: user "lastchance" - https://cplusplus.com/forum/general/242186/
+        return min + (max - min) * rand() / RAND_MAX;
+    }
+
+    void generateCubes(int nCubePositions) {
+        std::pair<float, float> xRange = { -7.0f, 7.0f };
+        std::pair<float, float> yRange = { -7.0f, 7.0f };
+        std::pair<float, float> zRange = { -7.0f, 7.0f };
+        cubePositions.reserve(nCubePositions);
+
+        for (int i = 0; i < nCubePositions; i++) {
+            glm::vec3 newPos(
+                    randFloat(xRange.first, xRange.second), 
+                    randFloat(yRange.first, yRange.second), 
+                    randFloat(zRange.first, zRange.second)
+                    );
+            cubePositions.push_back(newPos);
+        }
+    }
 
 public:
     Camera(float width, float height) {
