@@ -334,25 +334,8 @@ void logError(std::string comment) {
     std::cout << "\033[1;31m" << comment << "\033[0m" << std::endl;    
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) { // xpos and ypos are the mouse's current position
-    // circumvent jumpy mouse 
-    if (pCamera->firstMouse) {
-        pCamera->lastX = xpos;
-        pCamera->lastY = ypos;
-        pCamera->firstMouse = false;
-    }    
-
-    // calculate the offset
-    float xoffset = xpos - pCamera->lastX;
-    float yoffset = ypos - pCamera->lastY;
-    pCamera->lastX = xpos;
-    pCamera->lastY = ypos;
-
-    const float sensitivity = 0.08f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    pCamera->processMouseMovement(xoffset, yoffset, true);
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) { // xpos and ypos are the mouse's current position
+    pCamera->processMouseMovement(static_cast<float>(xposIn), static_cast<float>(yposIn), true);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
