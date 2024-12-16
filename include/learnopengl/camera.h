@@ -7,6 +7,10 @@
 
 class Camera {
 private:
+    // screen dimensions
+    float scrWidth;
+    float scrHeight;
+
     // camera axes
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -28,8 +32,10 @@ private:
 
 public:
     Camera(float width, float height) {
-        lastX = width / 2.0f;
-        lastY = height / 2.0f;
+        scrWidth = width;
+        scrHeight = height;
+        lastX = scrWidth / 2.0f;
+        lastY = scrHeight / 2.0f;
     }
 };
 
