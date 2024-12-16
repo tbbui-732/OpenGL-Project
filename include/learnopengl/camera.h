@@ -57,13 +57,6 @@ public:
     // frames
     float lastX;
     float lastY;
-
-
-    /////////////////////
-    ///// FUNCTIONS /////
-    /////////////////////
-
-public:
     Camera(float width, float height) {
         scrWidth = width;
         scrHeight = height;
@@ -71,6 +64,9 @@ public:
         lastY = scrHeight / 2.0f;
     }
 
+    /////////////////////
+    ///// FUNCTIONS /////
+    /////////////////////
     void processKeyboard(CameraDirection direction, float deltaTime) {
         const float cameraSpeed = 2.5f * deltaTime;
 
