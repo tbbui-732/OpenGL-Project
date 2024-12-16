@@ -78,13 +78,11 @@ public:
                 cameraPos -= cameraSpeed * cameraFront;
                 break;
             case LEFT: {
-                glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
-                cameraPos -= cameraSpeed * cameraRight;
+                cameraPos -= cameraSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
                 break;
             }
             case RIGHT: {
-                glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
-                cameraPos += cameraSpeed * cameraRight;
+                cameraPos += cameraSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
                 break;
             }
             case UP:
@@ -94,6 +92,43 @@ public:
                 cameraPos -= cameraSpeed * cameraUp;
                 break;
         }
+    }
+
+    void processMouseMovement(float xoffset, float yoffset, bool constraints) {
+        // update pitch and yaw values
+        yaw -= xoffset;
+        pitch += yoffset;
+
+        if (constraints) {
+            if (pitch > 89.0f)
+                pitch = 89.0f;
+            if (pitch < -89.0f)
+                pitch = -89.0f;
+        }
+
+        updateCameraAxes();
+    }
+
+    void processScrollMovement(float yoffset, float sensitivity) {
+        // update fov
+        fov -= static_cast<float>(yoffset) * sensitivity;
+        if (fov < 5.0f)
+            fov = 5.0f;
+        if (fov > 45.0f)
+            fov = 45.0f;
+
+        updateCameraAxes();
+    }
+
+    glm::mat4 getViewMatrix() {
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        return view;
+    }
+
+    glm::mat4 getProjectionMatrix() {
+        glm::mat4 projection(1.0f);
+        projection = glm::perspective(glm::radians(fov), scrWidth / scrHeight, 0.1f, 100.0f);
+        return projection;
     }
 };
 
