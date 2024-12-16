@@ -5,6 +5,15 @@
 #include "../glad/glad.h"
 #include "../glfw/glfw3.h"
 
+enum CameraDirection {
+    FORWARD,
+    BACKWARD, 
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN
+};
+
 class Camera {
 private:
     /////////////////////
@@ -28,38 +37,13 @@ private:
     float pitch = 0.0f;
 
     // frames
-    float deltaTime = 0.0f;
-    float lastFrame = 0.0f;
     float lastX;
     float lastY;
-
-    // scene objects
-    std::vector<glm::vec3> cubePositions; 
 
 
     /////////////////////
     ///// FUNCTIONS /////
     /////////////////////
-    float randFloat(float min, float max) {
-        // Source: user "lastchance" - https://cplusplus.com/forum/general/242186/
-        return min + (max - min) * rand() / RAND_MAX;
-    }
-
-    void generateCubes(int nCubePositions) {
-        std::pair<float, float> xRange = { -7.0f, 7.0f };
-        std::pair<float, float> yRange = { -7.0f, 7.0f };
-        std::pair<float, float> zRange = { -7.0f, 7.0f };
-        cubePositions.reserve(nCubePositions);
-
-        for (int i = 0; i < nCubePositions; i++) {
-            glm::vec3 newPos(
-                    randFloat(xRange.first, xRange.second), 
-                    randFloat(yRange.first, yRange.second), 
-                    randFloat(zRange.first, zRange.second)
-                    );
-            cubePositions.push_back(newPos);
-        }
-    }
 
 public:
     Camera(float width, float height) {
@@ -67,6 +51,35 @@ public:
         scrHeight = height;
         lastX = scrWidth / 2.0f;
         lastY = scrHeight / 2.0f;
+    }
+
+    void processKeyboard(CameraDirection direction, float deltaTime) {
+        const float cameraSpeed = 2.5f * deltaTime;
+
+        switch (direction) {
+            case FORWARD:
+                cameraPos += cameraSpeed * cameraFront;
+                break;
+            case BACKWARD:
+                cameraPos -= cameraSpeed * cameraFront;
+                break;
+            case LEFT: {
+                glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+                cameraPos -= cameraSpeed * cameraRight;
+                break;
+            }
+            case RIGHT: {
+                glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+                cameraPos += cameraSpeed * cameraRight;
+                break;
+            }
+            case UP:
+                cameraPos += cameraSpeed * cameraUp;
+                break;
+            case DOWN:
+                cameraPos -= cameraSpeed * cameraUp;
+                break;
+        }
     }
 };
 
