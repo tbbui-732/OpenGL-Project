@@ -16,6 +16,22 @@ enum CameraDirection {
 
 class Camera {
 private:
+    void updateCameraAxes() {
+        // Front
+        glm::vec3 newCameraFront;
+        newCameraFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        newCameraFront.y = sin(glm::radians(pitch));
+        newCameraFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        cameraFront = glm::normalize(newCameraFront);
+
+        // Right
+        cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
+
+        // Up
+        cameraUp = glm::normalize(glm::cross(cameraFront, cameraRight));
+    }
+
+public:
     /////////////////////
     ///// VARIABLES /////
     /////////////////////
@@ -24,9 +40,11 @@ private:
     float scrHeight;
 
     // camera axes
+    glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
 
     // camera settings
     float fov = 45.0f;
