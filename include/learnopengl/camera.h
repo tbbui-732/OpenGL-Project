@@ -82,14 +82,12 @@ public:
             case BACKWARD:
                 cameraPos -= cameraSpeed * cameraFront;
                 break;
-            case LEFT: {
-                cameraPos -= cameraSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
+            case LEFT:
+                cameraPos += cameraSpeed * cameraRight;
                 break;
-            }
-            case RIGHT: {
-                cameraPos += cameraSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
+            case RIGHT:
+                cameraPos -= cameraSpeed * cameraRight;
                 break;
-            }
             case UP:
                 cameraPos += cameraSpeed * cameraUp;
                 break;
