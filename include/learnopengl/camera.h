@@ -40,11 +40,11 @@ public:
     float scrHeight;
 
     // camera axes
-    glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
+    glm::vec3 worldUp;
+    glm::vec3 cameraPos;
+    glm::vec3 cameraFront;
+    glm::vec3 cameraRight;
+    glm::vec3 cameraUp;
 
     // camera settings
     float fov = 45.0f;
@@ -57,11 +57,16 @@ public:
     // frames
     float lastX;
     float lastY;
+
+    // CONSTRUCTOR
     Camera(float width, float height) {
         scrWidth = width;
         scrHeight = height;
         lastX = scrWidth / 2.0f;
         lastY = scrHeight / 2.0f;
+        worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
+        cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     }
 
     /////////////////////
