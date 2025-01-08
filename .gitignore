@@ -1,5 +1,5 @@
-# executable
-OpenGLApp
-
 # object files
 *.o
+
+# build
+build/
