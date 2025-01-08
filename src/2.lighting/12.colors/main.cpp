@@ -91,47 +91,47 @@ int main() {
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-         -0.5f,  -0.5f,  -0.5f,   0.0f,   0.0f,
-          0.5f,  -0.5f,  -0.5f,   1.0f,   0.0f,
-          0.5f,   0.5f,  -0.5f,   1.0f,   1.0f,
-          0.5f,   0.5f,  -0.5f,   1.0f,   1.0f,
-         -0.5f,   0.5f,  -0.5f,   0.0f,   1.0f,
-         -0.5f,  -0.5f,  -0.5f,   0.0f,   0.0f,
+        -0.5f, -0.5f, -0.5f, 
+         0.5f, -0.5f, -0.5f,  
+         0.5f,  0.5f, -0.5f,  
+         0.5f,  0.5f, -0.5f,  
+        -0.5f,  0.5f, -0.5f, 
+        -0.5f, -0.5f, -0.5f, 
 
-         -0.5f,  -0.5f,   0.5f,   0.0f,   0.0f,
-          0.5f,  -0.5f,   0.5f,   1.0f,   0.0f,
-          0.5f,   0.5f,   0.5f,   1.0f,   1.0f,
-          0.5f,   0.5f,   0.5f,   1.0f,   1.0f,
-         -0.5f,   0.5f,   0.5f,   0.0f,   1.0f,
-         -0.5f,  -0.5f,   0.5f,   0.0f,   0.0f,
+        -0.5f, -0.5f,  0.5f, 
+         0.5f, -0.5f,  0.5f,  
+         0.5f,  0.5f,  0.5f,  
+         0.5f,  0.5f,  0.5f,  
+        -0.5f,  0.5f,  0.5f, 
+        -0.5f, -0.5f,  0.5f, 
 
-         -0.5f,   0.5f,   0.5f,   1.0f,   0.0f,
-         -0.5f,   0.5f,  -0.5f,   1.0f,   1.0f,
-         -0.5f,  -0.5f,  -0.5f,   0.0f,   1.0f,
-         -0.5f,  -0.5f,  -0.5f,   0.0f,   1.0f,
-         -0.5f,  -0.5f,   0.5f,   0.0f,   0.0f,
-         -0.5f,   0.5f,   0.5f,   1.0f,   0.0f,
+        -0.5f,  0.5f,  0.5f, 
+        -0.5f,  0.5f, -0.5f, 
+        -0.5f, -0.5f, -0.5f, 
+        -0.5f, -0.5f, -0.5f, 
+        -0.5f, -0.5f,  0.5f, 
+        -0.5f,  0.5f,  0.5f, 
 
-          0.5f,   0.5f,   0.5f,   1.0f,   0.0f,
-          0.5f,   0.5f,  -0.5f,   1.0f,   1.0f,
-          0.5f,  -0.5f,  -0.5f,   0.0f,   1.0f,
-          0.5f,  -0.5f,  -0.5f,   0.0f,   1.0f,
-          0.5f,  -0.5f,   0.5f,   0.0f,   0.0f,
-          0.5f,   0.5f,   0.5f,   1.0f,   0.0f,
+         0.5f,  0.5f,  0.5f,  
+         0.5f,  0.5f, -0.5f,  
+         0.5f, -0.5f, -0.5f,  
+         0.5f, -0.5f, -0.5f,  
+         0.5f, -0.5f,  0.5f,  
+         0.5f,  0.5f,  0.5f,  
 
-         -0.5f,  -0.5f,  -0.5f,   0.0f,   1.0f,
-          0.5f,  -0.5f,  -0.5f,   1.0f,   1.0f,
-          0.5f,  -0.5f,   0.5f,   1.0f,   0.0f,
-          0.5f,  -0.5f,   0.5f,   1.0f,   0.0f,
-         -0.5f,  -0.5f,   0.5f,   0.0f,   0.0f,
-         -0.5f,  -0.5f,  -0.5f,   0.0f,   1.0f,
+        -0.5f, -0.5f, -0.5f, 
+         0.5f, -0.5f, -0.5f,  
+         0.5f, -0.5f,  0.5f,  
+         0.5f, -0.5f,  0.5f,  
+        -0.5f, -0.5f,  0.5f, 
+        -0.5f, -0.5f, -0.5f, 
 
-         -0.5f,   0.5f,  -0.5f,   0.0f,   1.0f,
-          0.5f,   0.5f,  -0.5f,   1.0f,   1.0f,
-          0.5f,   0.5f,   0.5f,   1.0f,   0.0f,
-          0.5f,   0.5f,   0.5f,   1.0f,   0.0f,
-         -0.5f,   0.5f,   0.5f,   0.0f,   0.0f,
-         -0.5f,   0.5f,  -0.5f,   0.0f,   1.0f
+        -0.5f,  0.5f, -0.5f, 
+         0.5f,  0.5f, -0.5f,  
+         0.5f,  0.5f,  0.5f,  
+         0.5f,  0.5f,  0.5f,  
+        -0.5f,  0.5f,  0.5f, 
+        -0.5f,  0.5f, -0.5f, 
     };
 
     // regular cube
@@ -140,28 +140,36 @@ int main() {
     // light source
     glm::vec3 lightCubePos(0.0f, 0.0f, 10.0f);
 
-    //////////////////////
-    ///// INITIALIZE /////
-    //////////////////////
-    unsigned int VAO, VBO;
-    glGenVertexArrays(1, &VAO); 
+    ///////////////////////
+    ///// VBO AND VAO /////
+    ///////////////////////
+    // FIRST - initialize cube's VAO and VBO
+    unsigned int VBO, cubeVAO;
+    glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &VBO);
 
-    //////////////////
-    ///// OBJECT /////
-    //////////////////
-    // create and bind vao and vbo
-    glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // set attribute pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*) 0); // position
+    glBindVertexArray(cubeVAO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0); // position attribute
+    glEnableVertexAttribArray(0);
+
+    // SECOND - initialize light source cube's VAO and VBO
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+
+    // need to bind VBO in order to link with vertex attrib pointer
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0); // position attribute
     glEnableVertexAttribArray(0);
 
     // unbind to prevent accidental state changes
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+
 
     ///////////////////////
     ///// BIND SHADER /////
@@ -205,7 +213,7 @@ int main() {
         // draw element
         // ------------
         ourShader.use();
-        glBindVertexArray(VAO);
+        glBindVertexArray(cubeVAO);
 
         //glm::mat4 model(1.0f);
         //model = glm::translate(model, regularCubePos);
@@ -228,7 +236,8 @@ int main() {
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteVertexArrays(1, &lightVAO);
     glDeleteBuffers(1, &VBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
