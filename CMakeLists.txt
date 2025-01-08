@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Executables
-set(CHAPTER "1.getting_started") # NOTE: update this depending on the chapter being built!
-set(SUBCHAPTER "10.camera")
+set(CHAPTER "2.lighting") # NOTE: update this depending on the chapter being built!
+set(SUBCHAPTER "12.colors")
 add_executable(${PROJECT_NAME} src/${CHAPTER}/${SUBCHAPTER}/main.cpp src/glad.c src/stb_image.c)
 
 # Libraries
