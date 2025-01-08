@@ -135,11 +135,11 @@ int main() {
          -0.5f,   0.5f,  -0.5f,   0.0f,   1.0f
     };
 
-    // Generate a bunch of random cube positions
-    int nCubePositions = 2;
-    std::vector<glm::vec3> cubePositions; cubePositions.reserve(nCubePositions);
-    cubePositions.push_back(glm::vec3(0, 0, -1));
-    cubePositions.push_back(glm::vec3(5, 5, -1));
+    // regular cube
+    glm::vec3 regularCubePos(1.0f, 1.0f, -1.0f);
+
+    // light source
+    glm::vec3 lightCubePos(0.0f, 0.0f, -1.0f);
 
     //////////////////////
     ///// INITIALIZE /////
@@ -208,13 +208,18 @@ int main() {
         ourShader.use();
         glBindVertexArray(VAO);
 
-        for (int i = 0; i < nCubePositions; i++) {
-            glm::mat4 model(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, glm::radians(5.0f * (i+1) * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
-            ourShader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        //glm::mat4 model(1.0f);
+        //model = glm::translate(model, regularCubePos);
+        //model = glm::rotate(model, glm::radians(5.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
+        //ourShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glm::mat4 model(1.0f);
+        model = glm::translate(model, lightCubePos);
+        model = glm::rotate(model, glm::radians(5.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
+        ourShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
