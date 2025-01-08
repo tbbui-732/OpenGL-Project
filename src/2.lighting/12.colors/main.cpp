@@ -83,7 +83,7 @@ int main() {
     // ------------------------------------
     std::string vertexPath = shaderPath + "vertex.glsl";
     std::string fragmentPath = shaderPath + "fragment.glsl";
-    Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
+    Shader lightingShader(vertexPath.c_str(), fragmentPath.c_str());
 
     ////////////////////
     ///// VERTICES /////
@@ -175,7 +175,7 @@ int main() {
     ///// BIND SHADER /////
     ///////////////////////
     // -----------
-    ourShader.use();
+    lightingShader.use();
 
     /////////////////////////
     ///// DEPTH TESTING /////
@@ -204,27 +204,27 @@ int main() {
         // ------
         // view matrix
         glm::mat4 view = pCamera->getViewMatrix();
-        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         // projection matrix
         glm::mat4 projection = pCamera->getProjectionMatrix();
-        glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
         // draw element
         // ------------
-        ourShader.use();
+        lightingShader.use();
         glBindVertexArray(cubeVAO);
 
         //glm::mat4 model(1.0f);
         //model = glm::translate(model, regularCubePos);
         //model = glm::rotate(model, glm::radians(5.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
-        //ourShader.setMat4("model", model);
+        //lightingShader.setMat4("model", model);
         //glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glm::mat4 model(1.0f);
         model = glm::translate(model, lightCubePos);
         model = glm::rotate(model, glm::radians(5.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
