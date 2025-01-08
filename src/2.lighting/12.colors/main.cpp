@@ -134,10 +134,10 @@ int main() {
     };
 
     // regular cube
-    glm::vec3 regularCubePos(1.0f, 1.0f, 10.0f);
+    glm::vec3 regularCubePos(-1.0f, -1.0f, 5.0f);
 
     // light source
-    glm::vec3 lightCubePos(0.0f, 0.0f, 10.0f);
+    glm::vec3 lightCubePos(2.0f, 1.0f, 10.0f);
 
     ///////////////////////
     ///// VBO AND VAO /////
