@@ -11,7 +11,6 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include <utility>
 #include <vector>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -25,7 +24,6 @@ float genRandFloat(float min, float max);
 const unsigned int SCR_WIDTH = 1600;
 const unsigned int SCR_HEIGHT = 1200;
 const std::string shaderPath =    std::filesystem::current_path().string() + "/../src/2.lighting/12.colors/"; // NOTE: make sure to update this correctly!
-const std::string resourcesPath = std::filesystem::current_path().string() + "/../resources/textures/";
 
 // frames
 float deltaTime = 0.0f;
@@ -89,46 +87,6 @@ int main() {
     Shader ourShader(vertexPath.c_str(), fragmentPath.c_str());
 
     ////////////////////
-    ///// TEXTURES /////
-    ////////////////////
-    unsigned int textures[2];
-    glGenTextures(2, textures);
-   
-    // repeat on wrap
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // linear filter when magnifying/minifying
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // load images
-    int width, height, nrChannels;
-    unsigned char *data;
-    
-    // load container texture
-    glActiveTexture(GL_TEXTURE0); // activate texture unit 1
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
-
-    data = stbi_load((resourcesPath + "container.jpg").c_str(), &width, &height, &nrChannels, 0);
-    if (!data) logError("Unable to load container.jpg");
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    // load awesome face texture
-    glActiveTexture(GL_TEXTURE1); // activate texture unit 2
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-
-    stbi_set_flip_vertically_on_load(true);
-    data = stbi_load((resourcesPath + "awesomeface.png").c_str(), &width, &height, &nrChannels, 0);
-    if (!data) logError("Unable to load awesomeface.jpg");
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    // unload image
-    stbi_image_free(data);
-
-    ////////////////////
     ///// VERTICES /////
     ////////////////////
     // set up vertex data (and buffer(s)) and configure vertex attributes
@@ -178,20 +136,10 @@ int main() {
     };
 
     // Generate a bunch of random cube positions
-    int nCubePositions = 50;
-    std::pair<float, float> xRange = { -7.0f, 7.0f };
-    std::pair<float, float> yRange = { -7.0f, 7.0f };
-    std::pair<float, float> zRange = { -7.0f, 7.0f };
+    int nCubePositions = 2;
     std::vector<glm::vec3> cubePositions; cubePositions.reserve(nCubePositions);
-
-    for (int i = 0; i < nCubePositions; i++) {
-        glm::vec3 newPos(
-                genRandFloat(xRange.first, xRange.second), 
-                genRandFloat(yRange.first, yRange.second), 
-                genRandFloat(zRange.first, zRange.second)
-                );
-        cubePositions.push_back(newPos);
-    }
+    cubePositions.push_back(glm::vec3(0, 0, -1));
+    cubePositions.push_back(glm::vec3(5, 5, -1));
 
     //////////////////////
     ///// INITIALIZE /////
@@ -211,8 +159,6 @@ int main() {
     // set attribute pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*) 0); // position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*) (3*sizeof(float))); // texture coordinate
-    glEnableVertexAttribArray(1);
 
     // unbind to prevent accidental state changes
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -223,8 +169,6 @@ int main() {
     ///////////////////////
     // -----------
     ourShader.use();
-    ourShader.setInt("texture1", 0); // update fragment shader's uniform value
-    ourShader.setInt("texture2", 1);
 
     /////////////////////////
     ///// DEPTH TESTING /////
@@ -248,13 +192,6 @@ int main() {
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: What does this do?
-
-        // bind textures to corresponding texture units
-        // -------------
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, textures[1]);
 
         // camera
         // ------
