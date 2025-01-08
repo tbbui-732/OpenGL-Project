@@ -24,8 +24,8 @@ float genRandFloat(float min, float max);
 // settings
 const unsigned int SCR_WIDTH = 1600;
 const unsigned int SCR_HEIGHT = 1200;
-const std::string shaderPath = std::filesystem::current_path().string() + "/src/1.getting_started/10.camera/shaders/";
-const std::string resourcesPath = std::filesystem::current_path().string() + "/resources/textures/";
+const std::string shaderPath =    std::filesystem::current_path().string() + "/../src/1.getting_started/10.camera/shaders/";
+const std::string resourcesPath = std::filesystem::current_path().string() + "/../resources/textures/";
 
 // frames
 float deltaTime = 0.0f;
