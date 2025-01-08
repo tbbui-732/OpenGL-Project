@@ -51,8 +51,8 @@ public:
 
     // camera direction
     bool firstMouse = true;
-    float yaw = 0.0f;
-    float pitch = 0.0f;
+    float yaw;
+    float pitch;
 
     // frames
     float lastX;
@@ -60,13 +60,16 @@ public:
 
     // CONSTRUCTOR
     Camera(float width, float height) {
-        scrWidth = width;
-        scrHeight = height;
-        lastX = scrWidth / 2.0f;
-        lastY = scrHeight / 2.0f;
-        worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
-        cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+        scrWidth        = width;
+        scrHeight       = height;
+        lastX           = scrWidth / 2.0f;
+        lastY           = scrHeight / 2.0f;
+        worldUp         = glm::vec3(0.0f, 1.0f, 0.0f);
+        cameraPos       = glm::vec3(0.0f, 0.0f, -1.0f);
+        cameraFront     = glm::vec3(0.0f, 0.0f, 1.0f);
+        yaw = 90.0f;
+        pitch = 0.0f;
+        updateCameraAxes();
     }
 
     /////////////////////
