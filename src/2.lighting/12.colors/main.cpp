@@ -81,9 +81,8 @@ int main() {
     //////////////////
     // build and compile our shader program
     // ------------------------------------
-    std::string vertexPath = shaderPath + "vertex.glsl";
-    std::string fragmentPath = shaderPath + "fragment.glsl";
-    Shader lightingShader(vertexPath.c_str(), fragmentPath.c_str());
+    Shader lightingShader((shaderPath + "vertex.glsl").c_str(), (shaderPath + "fragment.glsl").c_str());
+    Shader lightSourceShader((shaderPath + "light_vertex.glsl").c_str(), (shaderPath + "light_frag.glsl").c_str());
 
     ////////////////////
     ///// VERTICES /////
@@ -170,13 +169,6 @@ int main() {
     // unbind to prevent accidental state changes
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-
-    ///////////////////////
-    ///// BIND SHADER /////
-    ///////////////////////
-    // -----------
-    lightingShader.use();
-
     /////////////////////////
     ///// DEPTH TESTING /////
     /////////////////////////
@@ -197,36 +189,43 @@ int main() {
 
         // set background
         // ------
-        glClearColor(0.0f, 0.5f, 0.2f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: What does this do?
-
-        // camera
-        // ------
-        // view matrix
-        glm::mat4 view = pCamera->getViewMatrix();
-        glUniformMatrix4fv(glGetUniformLocation(lightingShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-
-        // projection matrix
-        glm::mat4 projection = pCamera->getProjectionMatrix();
-        glUniformMatrix4fv(glGetUniformLocation(lightingShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
         // draw element
         // ------------
         lightingShader.use();
-        glBindVertexArray(cubeVAO);
+        lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.3f);
 
-        //glm::mat4 model(1.0f);
-        //model = glm::translate(model, regularCubePos);
-        //model = glm::rotate(model, glm::radians(5.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
-        //lightingShader.setMat4("model", model);
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        // RENDER CUBE 
+        glm::mat4 projection = pCamera->getProjectionMatrix();
+        lightingShader.setMat4("projection", projection);
+
+        glm::mat4 view = pCamera->getViewMatrix();
+        lightingShader.setMat4("view", view);
 
         glm::mat4 model(1.0f);
-        model = glm::translate(model, lightCubePos);
-        model = glm::rotate(model, glm::radians(5.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.5f));
+        model = glm::translate(model, regularCubePos);
         lightingShader.setMat4("model", model);
+
+        glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
+        // RENDER LIGHT SOURCE
+        lightSourceShader.use();
+        lightSourceShader.setMat4("projection", projection);
+        lightSourceShader.setMat4("view", view);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightCubePos);
+        lightSourceShader.setMat4("model", model);
+
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // unbind vaos to prevent accidental state changes
+        glBindVertexArray(0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
