@@ -19,8 +19,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 float genRandFloat(float min, float max);
 
 // settings
-const unsigned int SCR_WIDTH    = 1600;
-const unsigned int SCR_HEIGHT   = 1200;
+const unsigned int SCR_WIDTH    = 1200;
+const unsigned int SCR_HEIGHT   = 800;
 const std::string shaderPath    = std::filesystem::current_path().string() + "/../src/2.lighting/13.basic_lighting/"; // NOTE: make sure to update this correctly!
 
 // frames
