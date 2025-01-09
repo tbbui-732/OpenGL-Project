@@ -200,7 +200,7 @@ int main() {
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.3f);
         lightingShader.setVec3("lightPos", lightCubePos.x, lightCubePos.y, lightCubePos.z);
-
+        lightingShader.setVec3("viewPos", pCamera->cameraPos.x, pCamera->cameraPos.y, pCamera->cameraPos.z);
         // RENDER CUBE 
         glm::mat4 projection = pCamera->getProjectionMatrix();
         lightingShader.setMat4("projection", projection);
