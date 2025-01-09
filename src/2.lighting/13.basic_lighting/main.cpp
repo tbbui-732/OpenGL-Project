@@ -75,6 +75,11 @@ int main() {
         return -1;
     }
 
+    /////////////////////////
+    ///// DEPTH TESTING /////
+    /////////////////////////
+    glEnable(GL_DEPTH_TEST);
+
     //////////////////
     ///// SHADER /////
     //////////////////
@@ -154,6 +159,8 @@ int main() {
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0); // position attribute
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float))); // position attribute
+    glEnableVertexAttribArray(1);
 
     // SECOND - initialize light source cube's VAO and VBO
     unsigned int lightVAO;
@@ -165,16 +172,9 @@ int main() {
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0); // position attribute
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float))); // normals attribute
-    glEnableVertexAttribArray(1);
 
     // unbind to prevent accidental state changes
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    /////////////////////////
-    ///// DEPTH TESTING /////
-    /////////////////////////
-    glEnable(GL_DEPTH_TEST);
 
     ///////////////////////
     ///// RENDER LOOP /////
@@ -199,6 +199,7 @@ int main() {
         lightingShader.use();
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.3f);
+        lightingShader.setVec3("lightPos", lightCubePos.x, lightCubePos.y, lightCubePos.z);
 
         // RENDER CUBE 
         glm::mat4 projection = pCamera->getProjectionMatrix();
