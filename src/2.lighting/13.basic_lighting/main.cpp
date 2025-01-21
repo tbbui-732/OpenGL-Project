@@ -196,7 +196,6 @@ int main() {
 
         // draw element
         // ------------
-        
         double time = glfwGetTime();
         lightCubePos.x = cos(time);
         lightCubePos.y = sin(time);
@@ -207,6 +206,17 @@ int main() {
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.3f);
         lightingShader.setVec3("lightPos", lightCubePos.x, lightCubePos.y, lightCubePos.z);
         lightingShader.setVec3("viewPos", pCamera->cameraPos.x, pCamera->cameraPos.y, pCamera->cameraPos.z);
+
+        lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.specular", 1.0f, 0.5f, 0.31f);
+        lightingShader.setFloat("material.shininess", 32.0f);
+
+        lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+
         // RENDER CUBE 
         glm::mat4 projection = pCamera->getProjectionMatrix();
         lightingShader.setMat4("projection", projection);
