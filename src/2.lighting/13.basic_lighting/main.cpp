@@ -196,6 +196,12 @@ int main() {
 
         // draw element
         // ------------
+        
+        double time = glfwGetTime();
+        lightCubePos.x = cos(time);
+        lightCubePos.y = sin(time);
+        lightCubePos.z = cos(time);
+
         lightingShader.use();
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.3f);
