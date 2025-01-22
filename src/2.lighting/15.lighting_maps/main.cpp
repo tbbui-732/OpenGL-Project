@@ -148,6 +148,27 @@ int main() {
     ///// TEXTURES /////
     ////////////////////
 
+    // load in image
+    int texWidth, texHeight, nrChannels;
+    unsigned char *data = stbi_load("../../../resources/textures/container2.png", &texWidth, &texHeight, &nrChannels, 0);
+    if (!data) {
+        std::cout << "STB_IMAGE::ERROR: Unable to load image" << std::endl;
+        return 1;
+    }
+
+    // generate and bind texture
+    unsigned int containerTexture;
+    glGenTextures(1, &containerTexture);
+    glBindTexture(GL_TEXTURE_2D, containerTexture);
+
+    // specify texture using loaded image
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+    // generate mipmaps
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    // free image
+    stbi_image_free(data);
 
     ///////////////////////
     ///// VBO AND VAO /////
