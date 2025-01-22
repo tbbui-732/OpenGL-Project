@@ -196,26 +196,36 @@ int main() {
 
         // draw element
         // ------------
+
+        // light cube position
         double time = glfwGetTime();
         lightCubePos.x = cos(time);
         lightCubePos.y = sin(time);
         lightCubePos.z = cos(time);
+        
+        // light/light cube color
+        glm::vec3 lightColor;
+        lightColor.x = sin(time * 2.0f);
+        lightColor.y = sin(time * 0.8f);
+        lightColor.z = sin(time * 1.3f);
 
         lightingShader.use();
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.3f);
         lightingShader.setVec3("lightPos", lightCubePos.x, lightCubePos.y, lightCubePos.z);
         lightingShader.setVec3("viewPos", pCamera->cameraPos.x, pCamera->cameraPos.y, pCamera->cameraPos.z);
-
+        
+        // material
         lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("material.specular", 1.0f, 0.5f, 0.31f);
         lightingShader.setFloat("material.shininess", 32.0f);
 
-        lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(1.0f);
+        lightingShader.setVec3("light.ambient", ambientColor);
+        lightingShader.setVec3("light.diffuse", diffuseColor);
+        lightingShader.setVec3("light.specular", glm::vec3(1.0f));
 
         // RENDER CUBE 
         glm::mat4 projection = pCamera->getProjectionMatrix();
@@ -236,6 +246,10 @@ int main() {
         lightSourceShader.setMat4("projection", projection);
         lightSourceShader.setMat4("view", view);
 
+        // light source color
+        lightSourceShader.setVec3("lightColor", lightColor);
+
+        // light source position
         model = glm::mat4(1.0f);
         model = glm::translate(model, lightCubePos);
         lightSourceShader.setMat4("model", model);
