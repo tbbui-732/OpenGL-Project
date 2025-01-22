@@ -173,7 +173,7 @@ int main() {
     ///////////////////////
     ///// VBO AND VAO /////
     ///////////////////////
-    // FIRST - initialize cube's VAO and VBO
+    // [FIRST] - initialize cube's VAO and VBO
     unsigned int VBO, cubeVAO;
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &VBO);
@@ -183,12 +183,14 @@ int main() {
 
     glBindVertexArray(cubeVAO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0); // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0); // position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float))); // position attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float))); // normals
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float))); // texture coords
+    glEnableVertexAttribArray(2);
 
-    // SECOND - initialize light source cube's VAO and VBO
+    // [SECOND] - initialize light source cube's VAO and VBO
     unsigned int lightVAO;
     glGenVertexArrays(1, &lightVAO);
     glBindVertexArray(lightVAO);
@@ -196,7 +198,7 @@ int main() {
     // need to bind VBO in order to link with vertex attrib pointer
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0); // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0); // position
     glEnableVertexAttribArray(0);
 
     // unbind to prevent accidental state changes
