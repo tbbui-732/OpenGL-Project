@@ -3,6 +3,7 @@ out vec4 FragColor;
 
 in vec3 Normal;  
 in vec3 FragPos;  
+in vec2 TexCoords;
   
 uniform vec3 lightPos; 
 uniform vec3 lightColor;
@@ -10,8 +11,7 @@ uniform vec3 objectColor;
 uniform vec3 viewPos;
 
 struct Material {
-    vec3 ambient;
-    vec3 diffuse;
+    sampler2D diffuse;
     vec3 specular;
     float shininess;
 };
