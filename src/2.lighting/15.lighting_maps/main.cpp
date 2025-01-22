@@ -204,10 +204,10 @@ int main() {
         lightCubePos.z = cos(time);
         
         // light/light cube color
-        glm::vec3 lightColor;
-        lightColor.x = sin(time * 2.0f);
-        lightColor.y = sin(time * 0.8f);
-        lightColor.z = sin(time * 1.3f);
+        glm::vec3 lightColor = glm::vec3(1.0f);
+        //lightColor.x = sin(time * 2.0f);
+        //lightColor.y = sin(time * 0.8f);
+        //lightColor.z = sin(time * 1.3f);
 
         lightingShader.use();
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
