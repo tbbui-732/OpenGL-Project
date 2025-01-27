@@ -16,6 +16,7 @@ void processInput(GLFWwindow *window);
 void logError(std::string comment);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+float genRandFloat(float min, float max);
 unsigned int loadTexture(std::string texPath);
 
 // settings
@@ -358,4 +359,9 @@ unsigned int loadTexture(std::string texPath) {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     return texture;
+}
+
+float genRandFloat(float min, float max) {
+    // Source: user "lastchance" - https://cplusplus.com/forum/general/242186/
+    return min + (max - min) * rand() / RAND_MAX;
 }
