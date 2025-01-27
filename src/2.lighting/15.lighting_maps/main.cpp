@@ -89,7 +89,6 @@ glEnable(GL_DEPTH_TEST);
 Shader objectShader( (shaderPath + "object.vert").c_str(), (shaderPath + "object.frag").c_str() );
 Shader lampShader( (shaderPath + "lamp.vert").c_str(), (shaderPath + "lamp.frag").c_str() );
 
-
 ////////////////////
 ///// VERTICES /////
 ////////////////////
@@ -176,29 +175,10 @@ stbi_image_free(data);
 ///////////////
 ///// VBO /////
 ///////////////
-/*
-// generate VBOs
-unsigned int objectVBO, lampVBO;
-glGenBuffers(1, &objectVBO);
-glGenBuffers(1, &lampVBO);
-
-// set object VBO
-glBindTexture(GL_ARRAY_BUFFER, objectVBO);
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-// set lamp VBO
-glBindTexture(GL_ARRAY_BUFFER, lampVBO);
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-// unbind to prevent accidental state changes
-glBindTexture(GL_ARRAY_BUFFER, 0);
-*/
-
 unsigned int VBO;
 glGenBuffers(1, &VBO);
 glBindBuffer(GL_ARRAY_BUFFER, VBO);
 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
 
 ///////////////
 ///// VAO /////
@@ -249,11 +229,29 @@ while (!glfwWindowShouldClose(window)) {
     glm::mat4 view          = camera->getViewMatrix();
     glm::mat4 projection    = camera->getProjectionMatrix();
 
-    // update object shader
+    // use object shader
     objectShader.use();
+
+    // set object lighting properties
+    objectShader.setVec3("light.position", glm::vec3(1.2f, 1.0f, 2.0f));
+    objectShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+    objectShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+    objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+    // set object material properties
+    objectShader.setInt("material.diffuse", 0);
+    objectShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+    objectShader.setFloat("material.shininess", 64.0f);
+
+    // set object position
+    objectShader.setVec3("viewPos", camera->cameraPos);
     objectShader.setMat4("model", model);
     objectShader.setMat4("view", view);
     objectShader.setMat4("projection", projection);
+
+    // bind texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     // draw object
     glBindVertexArray(objectVAO);
@@ -285,7 +283,7 @@ while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 }
 
-// TODO: de-allocate all resources once they've outlived their purpose:
+// de-allocate all resources once they've outlived their purpose:
 // ------------------------------------------------------------------------
 glDeleteBuffers(1, &VBO);
 glDeleteVertexArrays(1, &objectVAO);
