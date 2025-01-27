@@ -139,6 +139,24 @@ float vertices[] = {
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
 
+// generate a bunch of random cube positions
+int nCubes = 15;
+std::vector<glm::vec3> cubePos;
+cubePos.reserve(nCubes);
+
+for (int i = 0; i < nCubes; i++) {
+    int x, y, z;
+    float minV = -10.0f; 
+    float maxV = 10.0f;
+
+    x = genRandFloat(minV, maxV);
+    y = genRandFloat(minV, maxV);
+    z = genRandFloat(minV, maxV);
+
+    glm::vec3 pos(x, y, z);
+    cubePos.push_back(pos);
+}
+
 
 ////////////////////
 ///// TEXTURES /////
