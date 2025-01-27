@@ -16,7 +16,6 @@ void processInput(GLFWwindow *window);
 void logError(std::string comment);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-float genRandFloat(float min, float max);
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
@@ -338,9 +337,4 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) { // xpos 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     camera->processScrollMovement(yoffset, 0.25f);
-}
-
-float genRandFloat(float min, float max) {
-    // Source: user "lastchance" - https://cplusplus.com/forum/general/242186/
-    return min + (max - min) * rand() / RAND_MAX;
 }
