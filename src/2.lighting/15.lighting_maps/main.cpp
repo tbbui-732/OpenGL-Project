@@ -16,6 +16,7 @@ void processInput(GLFWwindow *window);
 void logError(std::string comment);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+unsigned int loadTexture(std::string texPath);
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
@@ -141,35 +142,11 @@ float vertices[] = {
 ////////////////////
 ///// TEXTURES /////
 ////////////////////
-// create and bind texture
-unsigned int texture;
-glGenTextures(1, &texture);
-glBindTexture(GL_TEXTURE_2D, texture);
+// container texture
+unsigned int texture = loadTexture((texturePath + "container2.png"));
 
-// wrapping behavior
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-// filtering behavior
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-// read in texture image
-int texWidth, texHeight, nChannels;
-unsigned char* data = stbi_load((texturePath + "container2.png").c_str(), &texWidth, &texHeight, &nChannels, 0);
-
-if (!data) {
-    std::cout << "STBI_LOAD::ERROR: Unable to load texture" << std::endl;
-    return 1;
-}
-
-// load image
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-glGenerateMipmap(GL_TEXTURE_2D);
-
-// clean-up
-stbi_image_free(data);
-
+// container specular texture
+unsigned int specularTexture = loadTexture((texturePath + "container2_specular.png"));
 
 ///////////////
 ///// VBO /////
@@ -239,7 +216,7 @@ while (!glfwWindowShouldClose(window)) {
 
     // set object material properties
     objectShader.setInt("material.diffuse", 0);
-    objectShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+    objectShader.setInt("material.specular", 1);
     objectShader.setFloat("material.shininess", 64.0f);
 
     // set object position
@@ -251,6 +228,8 @@ while (!glfwWindowShouldClose(window)) {
     // bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularTexture);
 
     // draw object
     glBindVertexArray(objectVAO);
@@ -337,4 +316,46 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) { // xpos 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     camera->processScrollMovement(yoffset, 0.25f);
+}
+
+unsigned int loadTexture(std::string texPath) {
+    // read in texture image
+    int texWidth, texHeight, nChannels;
+    unsigned char* data = stbi_load(texPath.c_str(), &texWidth, &texHeight, &nChannels, 0);
+
+    if (!data) {
+        std::cout << "STBI_LOAD::ERROR: Unable to load texture" << std::endl;
+        exit(1);
+    }
+
+    int format;
+    switch (nChannels) {
+        case 3: 
+            format = GL_RGB;
+        case 4: 
+            format = GL_RGBA;
+    }
+
+    // create and bind texture
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // wrapping behavior
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+    // filtering behavior
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // load image
+    glTexImage2D(GL_TEXTURE_2D, 0, format, texWidth, texHeight, 0, format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    // clean-up
+    stbi_image_free(data);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return texture;
 }
