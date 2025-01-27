@@ -210,7 +210,7 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.use();
 
     // set object lighting properties
-    objectShader.setVec3("light.position", glm::vec3(1.2f, 1.0f, 2.0f));
+    objectShader.setVec3("light.direction", -0.2f, -0.1f, -0.3f);
     objectShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
     objectShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
     objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
