@@ -31,7 +31,7 @@ void main()
   	
     // --- diffuse ---
     vec3 norm             = normalize(Normal);
-    vec3 lightDir         = normalize(-light.direction);
+    vec3 lightDir         = normalize(-light.direction); // NOTE: Negative b/c it's easier to imagine the light coming FROM the light source
     float diff            = max(dot(norm, lightDir), 0.0);
     vec3 diffuse          = light.diffuse * diff * vec3(texture(material.diffuse, TexCoord));
 
