@@ -234,14 +234,14 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setVec3("sun.specular",    1.0f, 1.0f, 1.0f);
 
     // set point lighting properties
-    objectShader.setVec3("torch.position", -0.2f, -0.1f, -0.3f);
-    objectShader.setVec3("torch.ambient",   0.2f, 0.2f, 0.2f);
-    objectShader.setVec3("torch.diffuse",   0.5f, 0.5f, 0.5f);
-    objectShader.setVec3("torch.specular",  1.0f, 1.0f, 1.0f);
+    objectShader.setVec3("lamp.position", -0.2f, -0.1f, -0.3f);
+    objectShader.setVec3("lamp.ambient",   0.2f, 0.2f, 0.2f);
+    objectShader.setVec3("lamp.diffuse",   0.5f, 0.5f, 0.5f);
+    objectShader.setVec3("lamp.specular",  1.0f, 1.0f, 1.0f);
 
-    objectShader.setFloat("torch.constant",  1.0f);
-    objectShader.setFloat("torch.linear",    0.09f);
-    objectShader.setFloat("torch.quadratic", 0.032f);
+    objectShader.setFloat("lamp.constant",  1.0f);
+    objectShader.setFloat("lamp.linear",    0.09f);
+    objectShader.setFloat("lamp.quadratic", 0.032f);
 
 
     // set object material properties

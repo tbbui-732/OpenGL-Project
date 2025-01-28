@@ -33,7 +33,7 @@ uniform vec3 viewPos;
 
 uniform Material material;
 uniform DirectionalLight sun;
-uniform PointLight torch;
+uniform PointLight lamp;
 
 void main()
 {
@@ -57,24 +57,24 @@ void main()
 
 
     // attenuation
-    float distance        = length(torch.position - FragPos);
-    float attenuation     = 1.0 / (torch.constant + torch.linear * distance + 
-                                    torch.quadratic * (distance * distance));
+    float distance        = length(lamp.position - FragPos);
+    float attenuation     = 1.0 / (lamp.constant + lamp.linear * distance + 
+                                    lamp.quadratic * (distance * distance));
 
     // --- ambient --- 
-    vec3 ambient          = torch.ambient * vec3(texture(material.diffuse, TexCoord));
+    vec3 ambient          = lamp.ambient * vec3(texture(material.diffuse, TexCoord));
   	
     // --- diffuse ---
     vec3 norm             = normalize(Normal);
-    vec3 lightDir         = normalize(torch.position - FragPos);
+    vec3 lightDir         = normalize(lamp.position - FragPos);
     float diff            = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse          = torch.diffuse * diff * vec3(texture(material.diffuse, TexCoord));
+    vec3 diffuse          = lamp.diffuse * diff * vec3(texture(material.diffuse, TexCoord));
 
     // --- specular ---
     vec3 viewDir          = normalize(viewPos - FragPos);
     vec3 reflectDir       = reflect(-lightDir, norm);
     float spec            = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular         = torch.specular * spec * vec3(texture(material.specular, TexCoord));
+    vec3 specular         = lamp.specular * spec * vec3(texture(material.specular, TexCoord));
 
     // --- apply ---
     ambient *= attenuation;
