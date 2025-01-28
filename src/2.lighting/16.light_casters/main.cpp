@@ -146,8 +146,8 @@ cubePos.reserve(nCubes);
 
 for (int i = 0; i < nCubes; i++) {
     int x, y, z;
-    float minV = -10.0f; 
-    float maxV = 10.0f;
+    float minV = -5.0f; 
+    float maxV =  5.0f;
 
     x = genRandFloat(minV, maxV);
     y = genRandFloat(minV, maxV);
@@ -252,7 +252,17 @@ while (!glfwWindowShouldClose(window)) {
 
     // draw object
     glBindVertexArray(objectVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    for (int i = 0; i < nCubes; i++) {
+        model = glm::mat4(1.0f);    
+        model = glm::translate(model, cubePos[i]);
+        
+        float angle = 20.0f * i;
+        model = glm::rotate(model, angle, glm::vec3(1.0f, 0.5f, 0.3f));
+        objectShader.setMat4("model", model);
+
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     // update lamp shader
     lampShader.use();
