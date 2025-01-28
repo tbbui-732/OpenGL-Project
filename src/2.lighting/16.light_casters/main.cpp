@@ -227,11 +227,22 @@ while (!glfwWindowShouldClose(window)) {
     // use object shader
     objectShader.use();
 
-    // set object lighting properties
-    objectShader.setVec3("light.direction", -0.2f, -0.1f, -0.3f);
-    objectShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    objectShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-    objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+    // set directional lighting properties (our sun)
+    objectShader.setVec3("sun.direction", -20.0f, -10.0f, -30.0f);
+    objectShader.setVec3("sun.ambient",     0.2f, 0.2f, 0.2f);
+    objectShader.setVec3("sun.diffuse",     0.5f, 0.5f, 0.5f);
+    objectShader.setVec3("sun.specular",    1.0f, 1.0f, 1.0f);
+
+    // set point lighting properties
+    objectShader.setVec3("torch.position", -0.2f, -0.1f, -0.3f);
+    objectShader.setVec3("torch.ambient",   0.2f, 0.2f, 0.2f);
+    objectShader.setVec3("torch.diffuse",   0.5f, 0.5f, 0.5f);
+    objectShader.setVec3("torch.specular",  1.0f, 1.0f, 1.0f);
+
+    objectShader.setFloat("torch.constant",  1.0f);
+    objectShader.setFloat("torch.linear",    0.09f);
+    objectShader.setFloat("torch.quadratic", 0.032f);
+
 
     // set object material properties
     objectShader.setInt("material.diffuse", 0);
@@ -240,7 +251,7 @@ while (!glfwWindowShouldClose(window)) {
 
     // set object position
     objectShader.setVec3("viewPos", camera->cameraPos);
-    objectShader.setMat4("model", model);
+    //objectShader.setMat4("model", model);
     objectShader.setMat4("view", view);
     objectShader.setMat4("projection", projection);
 
