@@ -243,6 +243,13 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setFloat("lamp.linear",    0.09f);
     objectShader.setFloat("lamp.quadratic", 0.032f);
 
+    // set flashlight properties
+    objectShader.setVec3("torch.position", camera->cameraPos);
+    objectShader.setVec3("torch.direction", camera->cameraFront);
+    objectShader.setFloat("torch.cutOff", glm::cos(glm::radians(20.0f)));
+    objectShader.setVec3("torch.ambient",  glm::vec3(0.2));
+    objectShader.setVec3("torch.diffuse",  glm::vec3(0.5));
+    objectShader.setVec3("torch.specular", glm::vec3(1.0));
 
     // set object material properties
     objectShader.setInt("material.diffuse", 0);
