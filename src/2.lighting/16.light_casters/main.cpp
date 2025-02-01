@@ -227,17 +227,56 @@ while (!glfwWindowShouldClose(window)) {
     // use object shader
     objectShader.use();
 
-    // set flashlight properties
-    objectShader.setVec3(  "light.position",    camera->cameraPos);
-    objectShader.setVec3(  "light.direction",   camera->cameraFront);
-    objectShader.setFloat( "light.cutOff",      glm::cos(glm::radians(18.0f)));
-    objectShader.setFloat( "light.outerCutOff", glm::cos(glm::radians(19.0f)));
-    objectShader.setVec3(  "light.ambient",     glm::vec3(0.2));
-    objectShader.setVec3(  "light.diffuse",     glm::vec3(0.7));
-    objectShader.setVec3(  "light.specular",    glm::vec3(1.0));
-    objectShader.setFloat( "light.constant",    1.0f);
-    objectShader.setFloat( "light.linear",      0.09f);
-    objectShader.setFloat( "light.quadratic",   0.032f);
+    // set directional light properties 
+    objectShader.setVec3("dirLight.direction"   , glm::vec3(1.0));
+    objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.2));
+    objectShader.setVec3("dirLight.diffuse"     , glm::vec3(0.5));
+    objectShader.setVec3("dirLight.specular"    , glm::vec3(1.0));
+
+    // set point light(s) properties
+    //const int NR_POINT_LIGHTS = 4;
+    //for (int plIdx = 0; plIdx < NR_POINT_LIGHTS; ++plIdx) {
+    //    std::string st = std::format("pointLights{}", plIdx);
+    //    objectShader.setVec3 (std::format("{}.position  = {}", st, glm::vec3(plIdx)));
+    //    objectShader.setVec3 (std::format("{}.ambient   = {}", st, glm::vec3(0.2)));
+    //    objectShader.setVec3 (std::format("{}.diffuse   = {}", st, glm::vec3(0.5)));
+    //    objectShader.setVec3 (std::format("{}.specular  = {}", st, glm::vec3(1.0)));
+    //    objectShader.setFloat(std::format("{}.constant  = {}", st, 1.0));
+    //    objectShader.setFloat(std::format("{}.linear    = {}", st, 0.09));
+    //    objectShader.setFloat(std::format("{}.quadratic = {}", st, 0.032));
+    //}
+
+    objectShader.setVec3  ("pointLights[0].position" ,     glm::vec3(1.0) );
+    objectShader.setVec3  ("pointLights[0].ambient"  ,     glm::vec3(0.2) );
+    objectShader.setVec3  ("pointLights[0].diffuse"  ,     glm::vec3(0.5) );
+    objectShader.setVec3  ("pointLights[0].specular" ,     glm::vec3(1.0) );
+    objectShader.setFloat ("pointLights[0].constant" ,     1.0      );
+    objectShader.setFloat ("pointLights[0].linear"   ,     0.09     );
+    objectShader.setFloat ("pointLights[0].quadratic",     0.032    );
+
+    objectShader.setVec3  ("pointLights[1].position" ,     glm::vec3(2.0) );
+    objectShader.setVec3  ("pointLights[1].ambient"  ,     glm::vec3(0.2) );
+    objectShader.setVec3  ("pointLights[1].diffuse"  ,     glm::vec3(0.5) );
+    objectShader.setVec3  ("pointLights[1].specular" ,     glm::vec3(1.0) );
+    objectShader.setFloat ("pointLights[1].constant" ,     1.0      );
+    objectShader.setFloat ("pointLights[1].linear"   ,     0.09     );
+    objectShader.setFloat ("pointLights[1].quadratic",     0.032    );
+
+    objectShader.setVec3  ("pointLights[2].position" ,     glm::vec3(3.0) );
+    objectShader.setVec3  ("pointLights[2].ambient"  ,     glm::vec3(0.2) );
+    objectShader.setVec3  ("pointLights[2].diffuse"  ,     glm::vec3(0.5) );
+    objectShader.setVec3  ("pointLights[2].specular" ,     glm::vec3(1.0) );
+    objectShader.setFloat ("pointLights[2].constant" ,     1.0      );
+    objectShader.setFloat ("pointLights[2].linear"   ,     0.09     );
+    objectShader.setFloat ("pointLights[2].quadratic",     0.032    );
+
+    objectShader.setVec3  ("pointLights[3].position" ,     glm::vec3(4.0) );
+    objectShader.setVec3  ("pointLights[3].ambient"  ,     glm::vec3(0.2) );
+    objectShader.setVec3  ("pointLights[3].diffuse"  ,     glm::vec3(0.5) );
+    objectShader.setVec3  ("pointLights[3].specular" ,     glm::vec3(1.0) );
+    objectShader.setFloat ("pointLights[3].constant" ,     1.0      );
+    objectShader.setFloat ("pointLights[3].linear"   ,     0.09     );
+    objectShader.setFloat ("pointLights[3].quadratic",     0.032    );
 
     // set object material properties
     objectShader.setInt("material.diffuse", 0);
