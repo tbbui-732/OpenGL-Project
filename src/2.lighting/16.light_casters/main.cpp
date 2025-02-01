@@ -227,6 +227,7 @@ while (!glfwWindowShouldClose(window)) {
     // use object shader
     objectShader.use();
 
+    // TODO: Make sure these values are correctly set
     // set directional light properties 
     objectShader.setVec3("dirLight.direction"   , glm::vec3(1.0));
     objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.2));
@@ -246,6 +247,7 @@ while (!glfwWindowShouldClose(window)) {
     //    objectShader.setFloat(std::format("{}.quadratic = {}", st, 0.032));
     //}
 
+    // TODO: Condense this monstrosity please for the love of god
     objectShader.setVec3  ("pointLights[0].position" ,     glm::vec3(1.0) );
     objectShader.setVec3  ("pointLights[0].ambient"  ,     glm::vec3(0.2) );
     objectShader.setVec3  ("pointLights[0].diffuse"  ,     glm::vec3(0.5) );
@@ -308,6 +310,7 @@ while (!glfwWindowShouldClose(window)) {
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
+    // TODO: need to render 4 lamps 
     // update lamp shader
     lampShader.use();
 
