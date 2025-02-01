@@ -34,21 +34,17 @@ struct PointLight {
     float quadratic;
 }
 
-// TODO: Write up a function to calculate the SpotLight.
-// In this case, I want to create a flashlight, so it'll be attached to 
-//  the player... GOODLUCK!
-
-struct SpotLight {
-    vec3 position;
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    float constant;
-    float linear;
-    float quadratic;
-    float innerAngle;
-    float outerAngle;
-}
+//struct SpotLight {
+//    vec3 position;
+//    vec3 ambient;
+//    vec3 diffuse;
+//    vec3 specular;
+//    float constant;
+//    float linear;
+//    float quadratic;
+//    float innerAngle;
+//    float outerAngle;
+//}
 
 // View position
 uniform vec3 viewPos;
@@ -59,7 +55,11 @@ uniform Material material;
 // Lighting
 uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
-uniform SpotLight flashLight; // attached to the player
+
+// TODO: Write up a function to calculate the SpotLight.
+// In this case, I want to create a flashlight, so it'll be attached to 
+//  the player... GOODLUCK!
+//uniform SpotLight flashLight; // attached to the player
 
 // ----- FRAGMENT SHADER MAIN ----- 
 void main() {
@@ -112,3 +112,10 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
 
     return (ambient + diffuse + specular);
 }
+
+//vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
+//    // diffuse
+//
+//    // specular
+//    
+//}
