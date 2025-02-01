@@ -29,6 +29,7 @@ struct FlashLight {
     vec3 position; 
     vec3 direction; 
     float cutOff;
+    float outerCutOff;
 
     vec3 ambient;
     vec3 diffuse;
@@ -50,6 +51,8 @@ void main()
 {
     vec3 torchDir = normalize(torch.position - FragPos);
     float theta = dot(torchDir, normalize(-torch.direction));
+    float epsilon = torch.cutOff - torch.outerCutOff;
+    float intensity = clamp((theta - torch.outerCutOff) / epsilon, 0.0, 1.0);
 
     if (theta > torch.cutOff)
     {    
@@ -68,11 +71,13 @@ void main()
         vec3 specular = torch.specular * spec * vec3(texture(material.specular, TexCoord));  
         
         // attenuation
-        float distance    = length(torch.position - FragPos);
-        float attenuation = 1.0 / (lamp.constant + lamp.linear * distance + lamp.quadratic * (distance * distance));    
+        //float distance    = length(torch.position - FragPos);
+        //float attenuation = 1.0 / (lamp.constant + lamp.linear * distance + lamp.quadratic * (distance * distance));    
+        //diffuse *= attenuation;
+        //specular *= attenuation;   
 
-        diffuse *= attenuation;
-        specular *= attenuation;   
+        diffuse *= intensity;
+        specular *= intensity;   
             
         vec3 result = ambient + diffuse + specular;
         FragColor = vec4(result, 1.0);
