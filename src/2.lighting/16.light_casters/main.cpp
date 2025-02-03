@@ -212,7 +212,6 @@ glEnableVertexAttribArray(0);
 // unbind to prevent accidental state changes
 glBindVertexArray(0);
 
-
 ///////////////////////
 ///// RENDER LOOP /////
 ///////////////////////
@@ -237,7 +236,6 @@ while (!glfwWindowShouldClose(window)) {
     // use object shader
     objectShader.use();
 
-    // TODO: Make sure these values are correctly set
     // set directional light properties 
     objectShader.setVec3("dirLight.direction"   , glm::vec3(1.0));
     objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.2));
@@ -245,7 +243,6 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setVec3("dirLight.specular"    , glm::vec3(1.0));
 
     // set point light(s) properties
-    //const int NR_POINT_LIGHTS = 4;
     //for (int plIdx = 0; plIdx < NR_POINT_LIGHTS; ++plIdx) {
     //    std::string st = std::format("pointLights{}", plIdx);
     //    objectShader.setVec3 (std::format("{}.position  = {}", st, glm::vec3(plIdx)));
