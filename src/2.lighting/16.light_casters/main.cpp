@@ -255,7 +255,7 @@ while (!glfwWindowShouldClose(window)) {
     //}
 
     // TODO: Condense this monstrosity please for the love of god
-    objectShader.setVec3  ("pointLights[0].position" ,     glm::vec3(1.0) );
+    objectShader.setVec3  ("pointLights[0].position" ,     pointLightPos[0] );
     objectShader.setVec3  ("pointLights[0].ambient"  ,     glm::vec3(0.2) );
     objectShader.setVec3  ("pointLights[0].diffuse"  ,     glm::vec3(0.5) );
     objectShader.setVec3  ("pointLights[0].specular" ,     glm::vec3(1.0) );
@@ -263,7 +263,7 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setFloat ("pointLights[0].linear"   ,     0.09     );
     objectShader.setFloat ("pointLights[0].quadratic",     0.032    );
 
-    objectShader.setVec3  ("pointLights[1].position" ,     glm::vec3(2.0) );
+    objectShader.setVec3  ("pointLights[1].position" ,     pointLightPos[1] );
     objectShader.setVec3  ("pointLights[1].ambient"  ,     glm::vec3(0.2) );
     objectShader.setVec3  ("pointLights[1].diffuse"  ,     glm::vec3(0.5) );
     objectShader.setVec3  ("pointLights[1].specular" ,     glm::vec3(1.0) );
@@ -271,7 +271,7 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setFloat ("pointLights[1].linear"   ,     0.09     );
     objectShader.setFloat ("pointLights[1].quadratic",     0.032    );
 
-    objectShader.setVec3  ("pointLights[2].position" ,     glm::vec3(3.0) );
+    objectShader.setVec3  ("pointLights[2].position" ,     pointLightPos[2] );
     objectShader.setVec3  ("pointLights[2].ambient"  ,     glm::vec3(0.2) );
     objectShader.setVec3  ("pointLights[2].diffuse"  ,     glm::vec3(0.5) );
     objectShader.setVec3  ("pointLights[2].specular" ,     glm::vec3(1.0) );
@@ -279,7 +279,7 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setFloat ("pointLights[2].linear"   ,     0.09     );
     objectShader.setFloat ("pointLights[2].quadratic",     0.032    );
 
-    objectShader.setVec3  ("pointLights[3].position" ,     glm::vec3(4.0) );
+    objectShader.setVec3  ("pointLights[3].position" ,     pointLightPos[3] );
     objectShader.setVec3  ("pointLights[3].ambient"  ,     glm::vec3(0.2) );
     objectShader.setVec3  ("pointLights[3].diffuse"  ,     glm::vec3(0.5) );
     objectShader.setVec3  ("pointLights[3].specular" ,     glm::vec3(1.0) );
@@ -317,23 +317,22 @@ while (!glfwWindowShouldClose(window)) {
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
-    // TODO: need to render 4 lamps 
     // update lamp shader
     lampShader.use();
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(1.2f, 1.0f, 2.0f));
-    model = glm::scale(model, glm::vec3(0.2f));
+    for (int lampIdx = 0; lampIdx < NR_POINT_LIGHTS; ++lampIdx) {
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, pointLightPos[lampIdx]);
+        model = glm::scale(model, glm::vec3(0.2f));
 
-    lampShader.setMat4("model", model);
-    lampShader.setMat4("view", view);
-    lampShader.setMat4("projection", projection);
+        lampShader.setMat4("model", model);
+        lampShader.setMat4("view", view);
+        lampShader.setMat4("projection", projection);
+        lampShader.setVec3("lightColor", glm::vec3(1.0f));
 
-    lampShader.setVec3("lightColor", glm::vec3(1.0f));
-
-    // draw lamp
-    glBindVertexArray(lampVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(lampVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     // unbind vaos to prevent accidental state changes
     glBindVertexArray(0);
