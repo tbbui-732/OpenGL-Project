@@ -157,6 +157,16 @@ for (int i = 0; i < nCubes; i++) {
     cubePos.push_back(pos);
 }
 
+// generate point light positions
+const int NR_POINT_LIGHTS = 4;
+std::vector<glm::vec3> pointLightPos;
+pointLightPos.reserve(NR_POINT_LIGHTS);
+
+for (int pointLightIdx = 0; pointLightIdx < NR_POINT_LIGHTS; ++pointLightIdx) {
+    glm::vec3 newPos(genRandFloat(-3, 3), genRandFloat(-3, 3), genRandFloat(-3, 3));
+    pointLightPos.push_back(newPos);
+}
+
 
 ////////////////////
 ///// TEXTURES /////
