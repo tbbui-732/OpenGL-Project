@@ -4,6 +4,7 @@
 #include "../../../include/learnopengl/camera.h"
 #include "../../../include/stb_image/stb_image.h"
 
+#include <cstdio>
 #include <iostream>
 #include <filesystem>
 #include <ostream>
@@ -445,4 +446,37 @@ unsigned int loadTexture(std::string texPath) {
 float genRandFloat(float min, float max) {
     // Source: user "lastchance" - https://cplusplus.com/forum/general/242186/
     return min + (max - min) * rand() / RAND_MAX;
+}
+
+// TODO: write a function to set the options for pointlight(s) shader
+void setPointLights(int MAX_POINT_LIGHTS) {
+    const std::vector<std::string> settings = {
+        "position",
+        "ambient",
+        "diffuse",
+        "specular",
+        "constant",
+        "linear",
+        "quadratic"
+    };
+
+    const int sz = (std::string("pointLights[n]")).size();
+    char plStr[sz];
+
+    // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
+    //  scope of this project anyways
+    if (MAX_POINT_LIGHTS > 9) {
+        logError("SETPOINTLIGHTS::ERROR::MAX_POINT_LIGHTS_EXCEEDED");
+        exit(1);
+    }
+
+    for (int idx = 0; idx < MAX_POINT_LIGHTS; ++idx) {
+        snprintf(plStr, sz, "pointLights[%d]", idx);
+
+        // ... 
+
+
+
+
+    }
 }
