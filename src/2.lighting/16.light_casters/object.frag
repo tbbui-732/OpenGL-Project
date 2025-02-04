@@ -34,6 +34,7 @@ struct PointLight {
 
 struct SpotLight {
     vec3 position;
+    vec3 direction;
 
     vec3 ambient;
     vec3 diffuse;
@@ -45,7 +46,7 @@ struct SpotLight {
 
     float innerAngle;
     float outerAngle;
-}
+};
 
 // Declarations
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 viewDir);
@@ -73,16 +74,17 @@ void main() {
     vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    // phase 1: direction light 
-    vec3 result = CalcDirLight(dirLight, normal, viewDir);
+    //// phase 1: direction light 
+    //vec3 result = CalcDirLight(dirLight, normal, viewDir);
 
-    // phase 2: point lights
-    for (int plIdx = 0; plIdx < NR_POINT_LIGHTS; ++plIdx) {
-        result += CalcPointLight(pointLights[plIdx], normal, viewDir);
-    }
+    //// phase 2: point lights
+    //for (int plIdx = 0; plIdx < NR_POINT_LIGHTS; ++plIdx) {
+    //    result += CalcPointLight(pointLights[plIdx], normal, viewDir);
+    //}
 
     // TODO: phase 3: spot lights
-    // ...
+    //result += CalcSpotLight(flashLight, normal, viewDir);
+    vec3 result = CalcSpotLight(flashLight, normal, viewDir);
 
     FragColor = vec4(result, 1.0);
 } 
@@ -137,7 +139,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
 // TODO: TEST THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NOT SURE IF IT WORKS!!!! !??!?!?! !!!!
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
     // ambient
-    glm::vec3 ambient = light.ambient * vec3(texture(material.ambient, TexCoord));
+    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
 
     // diffuse
     vec3 lightDir = normalize(light.position - FragPos);
@@ -145,8 +147,15 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
 
     // specular
     vec3 reflectDir = reflect(-lightDir, normal);
-    vec3 spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoord));
+
+    // spotlight (with soft edges)
+    float theta = dot(lightDir, normalize(-light.direction)); // NOTE: why do we negate viewDir? Is that even necessary?
+    float epsilon = (light.innerAngle - light.outerAngle);
+    float intensity = clamp((theta - light.outerAngle)/epsilon, 0.0, 1.0);
+    diffuse *= intensity;
+    specular *= intensity;
 
     // attenuation
     float distance = length(light.position - FragPos);
@@ -157,13 +166,6 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-
-    // spotlight (with soft ring)
-    float theta = dot(lightDir, normalize(-viewDir)); // NOTE: why do we negate viewDir? Is that even necessary?
-    float epsilon = (light.innerAngle - light.outerAngle);
-    float intensity = clamp((theta - light.outerAngle)/epsilon, 0.0, 1.0);
-    diffuse *= intensity;
-    specular *= intensity;
 
     return (ambient + diffuse + specular);
 }
