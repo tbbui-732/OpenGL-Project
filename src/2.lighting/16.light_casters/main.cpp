@@ -1,9 +1,11 @@
+// local includes TODO: need to fix CMake so it targets the include directory
 #include "../../../include/glad/glad.h"
 #include "../../../include/glfw/glfw3.h"
 #include "../../../include/learnopengl/shader.h"
 #include "../../../include/learnopengl/camera.h"
 #include "../../../include/stb_image/stb_image.h"
 
+// global includes
 #include <cstdio>
 #include <iostream>
 #include <filesystem>
@@ -11,15 +13,6 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
-void logError(std::string comment);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-float genRandFloat(float min, float max);
-unsigned int loadTexture(std::string texPath);
-void setPointLights(int MAX_POINT_LIGHTS);
 
 // structs
 typedef struct Attenuation {
@@ -39,6 +32,16 @@ typedef struct PointLightSetting {
     Phong       phong;
     Attenuation attenuation;
 } PointLightSetting;
+
+// declarations
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow *window);
+void logError(std::string comment);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+float genRandFloat(float min, float max);
+unsigned int loadTexture(std::string texPath);
+void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
@@ -284,43 +287,7 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setVec3("dirLight.specular"    , glm::vec3(1.0));
 
     // set point light(s) properties
-    // TODO: Condense this monstrosity please for the love of god
-/*
-    objectShader.setVec3  ("pointLights[0].position" ,     pointLightPos[0] );
-    objectShader.setVec3  ("pointLights[0].ambient"  ,     glm::vec3(0.2) );
-    objectShader.setVec3  ("pointLights[0].diffuse"  ,     glm::vec3(0.5) );
-    objectShader.setVec3  ("pointLights[0].specular" ,     glm::vec3(1.0) );
-    objectShader.setFloat ("pointLights[0].constant" ,     1.0      );
-    objectShader.setFloat ("pointLights[0].linear"   ,     0.09     );
-    objectShader.setFloat ("pointLights[0].quadratic",     0.032    );
-
-    objectShader.setVec3  ("pointLights[1].position" ,     pointLightPos[1] );
-    objectShader.setVec3  ("pointLights[1].ambient"  ,     glm::vec3(0.2) );
-    objectShader.setVec3  ("pointLights[1].diffuse"  ,     glm::vec3(0.5) );
-    objectShader.setVec3  ("pointLights[1].specular" ,     glm::vec3(1.0) );
-    objectShader.setFloat ("pointLights[1].constant" ,     1.0      );
-    objectShader.setFloat ("pointLights[1].linear"   ,     0.09     );
-    objectShader.setFloat ("pointLights[1].quadratic",     0.032    );
-
-    objectShader.setVec3  ("pointLights[2].position" ,     pointLightPos[2] );
-    objectShader.setVec3  ("pointLights[2].ambient"  ,     glm::vec3(0.2) );
-    objectShader.setVec3  ("pointLights[2].diffuse"  ,     glm::vec3(0.5) );
-    objectShader.setVec3  ("pointLights[2].specular" ,     glm::vec3(1.0) );
-    objectShader.setFloat ("pointLights[2].constant" ,     1.0      );
-    objectShader.setFloat ("pointLights[2].linear"   ,     0.09     );
-    objectShader.setFloat ("pointLights[2].quadratic",     0.032    );
-
-    objectShader.setVec3  ("pointLights[3].position" ,     pointLightPos[3] );
-    objectShader.setVec3  ("pointLights[3].ambient"  ,     glm::vec3(0.2) );
-    objectShader.setVec3  ("pointLights[3].diffuse"  ,     glm::vec3(0.5) );
-    objectShader.setVec3  ("pointLights[3].specular" ,     glm::vec3(1.0) );
-    objectShader.setFloat ("pointLights[3].constant" ,     1.0      );
-    objectShader.setFloat ("pointLights[3].linear"   ,     0.09     );
-    objectShader.setFloat ("pointLights[3].quadratic",     0.032    );
-*/
-    
-
-
+    setPointLights(settings, objectShader, NR_POINT_LIGHTS);
 
     // set object material properties
     objectShader.setInt("material.diffuse", 0);
@@ -483,20 +450,7 @@ float genRandFloat(float min, float max) {
 }
 
 // TODO: write a function to set the options for pointlight(s) shader
-void setPointLights(const int MAX_POINT_LIGHTS, const PointLightSetting& pls, const Shader& shaderProgram) { // pls uwu 🥺👉👈
-    const std::vector<std::string> settings = {
-        "position",
-        "ambient",
-        "diffuse",
-        "specular",
-        "constant",
-        "linear",
-        "quadratic"
-    };
-
-    const int sz = (std::string("pointLights[n]")).size() + 1; // golly i love strings
-    char plChArr[sz];
-
+void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) { // pls uwu 🥺👉👈
     // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
     //  scope of this project anyways
     if (MAX_POINT_LIGHTS > 9) {
@@ -504,17 +458,20 @@ void setPointLights(const int MAX_POINT_LIGHTS, const PointLightSetting& pls, co
         exit(1);
     }
 
-    for (int idx = 0; idx < MAX_POINT_LIGHTS; ++idx) {
-        snprintf(plChArr, sz, "pointLights[%d]", idx);
-        std::string plStr(plChArr);
+    const int sz = (std::string("pointLights[n]")).size() + 1; // golly i love strings
+    char plChArr[sz];
+    int idx = 0;
 
-        shaderProgram.setVec3 (plStr, pls.position);
-        shaderProgram.setVec3 (plStr, pls.phong.ambient);
-        shaderProgram.setVec3 (plStr, pls.phong.diffuse);
-        shaderProgram.setVec3 (plStr, pls.phong.specular);
-        shaderProgram.setFloat(plStr, pls.attenuation.constant);
-        shaderProgram.setFloat(plStr, pls.attenuation.linear);
-        shaderProgram.setFloat(plStr, pls.attenuation.quadratic);
-        }
+    for (const PointLightSetting& pls : settings) {
+        snprintf(plChArr, sz, "pointLights[%d]", idx++);
+        const std::string plStr(plChArr);
+
+        shaderProgram.setVec3 (plStr + ".position" , pls.position);
+        shaderProgram.setVec3 (plStr + ".ambient"  , pls.phong.ambient);
+        shaderProgram.setVec3 (plStr + ".diffuse"  , pls.phong.diffuse);
+        shaderProgram.setVec3 (plStr + ".specular" , pls.phong.specular);
+        shaderProgram.setFloat(plStr + ".constant" , pls.attenuation.constant);
+        shaderProgram.setFloat(plStr + ".linear"   , pls.attenuation.linear);
+        shaderProgram.setFloat(plStr + ".quadratic", pls.attenuation.quadratic);
     }
 }
