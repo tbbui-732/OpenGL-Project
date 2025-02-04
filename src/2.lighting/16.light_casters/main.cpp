@@ -294,7 +294,7 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setVec3("flashLight.position"    , camera->cameraPos);
     objectShader.setVec3("flashLight.direction"   , camera->cameraFront);
     objectShader.setVec3("flashLight.ambient"     , glm::vec3(0.2));
-    objectShader.setVec3("flashLight.diffuse"     , glm::vec3(0.5));
+    objectShader.setVec3("flashLight.diffuse"     , glm::vec3(0.9));
     objectShader.setVec3("flashLight.specular"    , glm::vec3(1.0));
     objectShader.setFloat("flashLight.constant"   , 1.0f);
     objectShader.setFloat("flashLight.linear"     , 0.09f);
