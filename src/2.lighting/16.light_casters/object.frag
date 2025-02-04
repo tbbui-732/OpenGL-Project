@@ -32,21 +32,25 @@ struct PointLight {
     float quadratic;
 };
 
+struct SpotLight {
+    vec3 position;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
+
+    float innerAngle;
+    float outerAngle;
+}
+
 // Declarations
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir);
-
-//struct SpotLight {
-//    vec3 position;
-//    vec3 ambient;
-//    vec3 diffuse;
-//    vec3 specular;
-//    float constant;
-//    float linear;
-//    float quadratic;
-//    float innerAngle;
-//    float outerAngle;
-//}
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir);
 
 // View position
 uniform vec3 viewPos;
@@ -61,7 +65,7 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 // TODO: Write up a function to calculate the SpotLight.
 // In this case, I want to create a flashlight, so it'll be attached to 
 //  the player... GOODLUCK!
-//uniform SpotLight flashLight; // attached to the player
+uniform SpotLight flashLight; // attached to the player
 
 // ----- FRAGMENT SHADER MAIN ----- 
 void main() {
@@ -77,7 +81,7 @@ void main() {
         result += CalcPointLight(pointLights[plIdx], normal, viewDir);
     }
 
-    // TOOD: phase 3: spot lights
+    // TODO: phase 3: spot lights
     // ...
 
     FragColor = vec4(result, 1.0);
@@ -130,9 +134,35 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
     return (ambient + diffuse + specular);
 }
 
-//vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
-//    // diffuse
-//
-//    // specular
-//    
-//}
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
+    // ambient
+    glm::vec3 ambient = light.ambient * vec3(texture(material.ambient, TexCoord));
+
+    // diffuse
+    vec3 lightDir = normalize(light.position - FragPos);
+    vec3 diffuse = light.diffuse * max(dot(normal, lightDir), 0.0) * vec3(texture(material.diffuse, TexCoord));
+
+    // specular
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoord));
+
+    // attenuation
+    float distance = length(light.position - FragPos);
+    float attenuation = 1.0 / ((light.constant) +
+                               (light.linear * distance) + 
+                               (light.quadratic * distance * distance));
+
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    // spotlight (with soft ring)
+    float theta = dot(lightDir, normalize(-viewDir)); // NOTE: why do we negate viewDir? Is that even necessary?
+    float epsilon = (light.innerAngle - light.outerAngle);
+    float intensity = clamp((theta - light.outerAngle)/epsilon, 0.0, 1.0);
+    diffuse *= intensity;
+    specular *= intensity;
+
+    return (ambient + diffuse + specular);
+}
