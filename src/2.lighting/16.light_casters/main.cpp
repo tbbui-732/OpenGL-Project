@@ -22,14 +22,22 @@ unsigned int loadTexture(std::string texPath);
 void setPointLights(int MAX_POINT_LIGHTS);
 
 // structs
-typedef struct PointLightSetting {
-    glm::vec3 pos;
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+typedef struct Attenuation {
     float constant;
     float linear;
     float quadratic;
+} Attenuation;
+
+typedef struct Phong {
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+} Phong;
+
+typedef struct PointLightSetting {
+    glm::vec3   pos;
+    Phong       phong;
+    Attenuation attenuation;
 } PointLightSetting;
 
 // settings
