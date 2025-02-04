@@ -36,7 +36,6 @@ struct SpotLight {
     vec3 position;
     vec3 direction;
 
-    vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 
@@ -137,9 +136,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
-    // ambient
-    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
-
     // diffuse
     vec3 lightDir = normalize(light.position - FragPos);
     vec3 diffuse = light.diffuse * max(dot(normal, lightDir), 0.0) * vec3(texture(material.diffuse, TexCoord));
@@ -162,9 +158,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
                                (light.linear * distance) + 
                                (light.quadratic * distance * distance));
 
-    ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
 
-    return (ambient + diffuse + specular);
+    return (diffuse + specular);
 }
