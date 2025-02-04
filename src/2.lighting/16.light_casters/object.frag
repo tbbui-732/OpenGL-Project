@@ -136,7 +136,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
     return (ambient + diffuse + specular);
 }
 
-// TODO: TEST THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NOT SURE IF IT WORKS!!!! !??!?!?! !!!!
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
     // ambient
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
