@@ -35,7 +35,7 @@ typedef struct Phong {
 } Phong;
 
 typedef struct PointLightSetting {
-    glm::vec3   pos;
+    glm::vec3   position;
     Phong       phong;
     Attenuation attenuation;
 } PointLightSetting;
@@ -188,6 +188,26 @@ for (int pointLightIdx = 0; pointLightIdx < NR_POINT_LIGHTS; ++pointLightIdx) {
     pointLightPos.push_back(newPos);
 }
 
+// generate multiple point light settings
+Attenuation att = { 1.0f, 0.09f, 0.032f };
+Phong phong = { glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f), };
+
+std::vector<PointLightSetting> settings;
+settings.reserve(NR_POINT_LIGHTS);
+
+for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
+    int x, y, z;
+    x = genRandFloat(-3, 3);
+    y = genRandFloat(-3, 3);
+    z = genRandFloat(-3, 3);
+    glm::vec3 pos(x, y, z);
+
+    PointLightSetting pls = {
+        pos, phong, att        
+    };
+
+    settings.push_back(pls);
+}
 
 ////////////////////
 ///// TEXTURES /////
@@ -264,17 +284,6 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setVec3("dirLight.specular"    , glm::vec3(1.0));
 
     // set point light(s) properties
-    //for (int plIdx = 0; plIdx < NR_POINT_LIGHTS; ++plIdx) {
-    //    std::string st = std::format("pointLights{}", plIdx);
-    //    objectShader.setVec3 (std::format("{}.position  = {}", st, glm::vec3(plIdx)));
-    //    objectShader.setVec3 (std::format("{}.ambient   = {}", st, glm::vec3(0.2)));
-    //    objectShader.setVec3 (std::format("{}.diffuse   = {}", st, glm::vec3(0.5)));
-    //    objectShader.setVec3 (std::format("{}.specular  = {}", st, glm::vec3(1.0)));
-    //    objectShader.setFloat(std::format("{}.constant  = {}", st, 1.0));
-    //    objectShader.setFloat(std::format("{}.linear    = {}", st, 0.09));
-    //    objectShader.setFloat(std::format("{}.quadratic = {}", st, 0.032));
-    //}
-
     // TODO: Condense this monstrosity please for the love of god
 /*
     objectShader.setVec3  ("pointLights[0].position" ,     pointLightPos[0] );
@@ -499,13 +508,13 @@ void setPointLights(const int MAX_POINT_LIGHTS, const PointLightSetting& pls, co
         snprintf(plChArr, sz, "pointLights[%d]", idx);
         std::string plStr(plChArr);
 
-        shaderProgram.setVec3 (plStr, pls.pos);
-        shaderProgram.setVec3 (plStr, pls.ambient);
-        shaderProgram.setVec3 (plStr, pls.diffuse);
-        shaderProgram.setVec3 (plStr, pls.specular);
-        shaderProgram.setFloat(plStr, pls.constant);
-        shaderProgram.setFloat(plStr, pls.linear);
-        shaderProgram.setFloat(plStr, pls.quadratic);
+        shaderProgram.setVec3 (plStr, pls.position);
+        shaderProgram.setVec3 (plStr, pls.phong.ambient);
+        shaderProgram.setVec3 (plStr, pls.phong.diffuse);
+        shaderProgram.setVec3 (plStr, pls.phong.specular);
+        shaderProgram.setFloat(plStr, pls.attenuation.constant);
+        shaderProgram.setFloat(plStr, pls.attenuation.linear);
+        shaderProgram.setFloat(plStr, pls.attenuation.quadratic);
         }
     }
 }
