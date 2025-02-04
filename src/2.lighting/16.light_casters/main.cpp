@@ -19,6 +19,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and y
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 float genRandFloat(float min, float max);
 unsigned int loadTexture(std::string texPath);
+void setPointLights(int MAX_POINT_LIGHTS);
+
+// structs
+typedef struct PointLightSetting {
+    glm::vec3 pos;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float constant;
+    float linear;
+    float quadratic;
+} PointLightSetting;
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
@@ -256,6 +268,7 @@ while (!glfwWindowShouldClose(window)) {
     //}
 
     // TODO: Condense this monstrosity please for the love of god
+/*
     objectShader.setVec3  ("pointLights[0].position" ,     pointLightPos[0] );
     objectShader.setVec3  ("pointLights[0].ambient"  ,     glm::vec3(0.2) );
     objectShader.setVec3  ("pointLights[0].diffuse"  ,     glm::vec3(0.5) );
@@ -287,6 +300,10 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setFloat ("pointLights[3].constant" ,     1.0      );
     objectShader.setFloat ("pointLights[3].linear"   ,     0.09     );
     objectShader.setFloat ("pointLights[3].quadratic",     0.032    );
+*/
+    
+
+
 
     // set object material properties
     objectShader.setInt("material.diffuse", 0);
@@ -449,7 +466,7 @@ float genRandFloat(float min, float max) {
 }
 
 // TODO: write a function to set the options for pointlight(s) shader
-void setPointLights(int MAX_POINT_LIGHTS) {
+void setPointLights(const int MAX_POINT_LIGHTS, const PointLightSetting& pls, const Shader& shaderProgram) { // pls uwu 🥺👉👈
     const std::vector<std::string> settings = {
         "position",
         "ambient",
@@ -460,8 +477,8 @@ void setPointLights(int MAX_POINT_LIGHTS) {
         "quadratic"
     };
 
-    const int sz = (std::string("pointLights[n]")).size();
-    char plStr[sz];
+    const int sz = (std::string("pointLights[n]")).size() + 1; // golly i love strings
+    char plChArr[sz];
 
     // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
     //  scope of this project anyways
@@ -471,12 +488,16 @@ void setPointLights(int MAX_POINT_LIGHTS) {
     }
 
     for (int idx = 0; idx < MAX_POINT_LIGHTS; ++idx) {
-        snprintf(plStr, sz, "pointLights[%d]", idx);
+        snprintf(plChArr, sz, "pointLights[%d]", idx);
+        std::string plStr(plChArr);
 
-        // ... 
-
-
-
-
+        shaderProgram.setVec3 (plStr, pls.pos);
+        shaderProgram.setVec3 (plStr, pls.ambient);
+        shaderProgram.setVec3 (plStr, pls.diffuse);
+        shaderProgram.setVec3 (plStr, pls.specular);
+        shaderProgram.setFloat(plStr, pls.constant);
+        shaderProgram.setFloat(plStr, pls.linear);
+        shaderProgram.setFloat(plStr, pls.quadratic);
+        }
     }
 }
