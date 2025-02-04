@@ -449,7 +449,6 @@ float genRandFloat(float min, float max) {
     return min + (max - min) * rand() / RAND_MAX;
 }
 
-// TODO: write a function to set the options for pointlight(s) shader
 void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) { // pls uwu 🥺👉👈
     // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
     //  scope of this project anyways
