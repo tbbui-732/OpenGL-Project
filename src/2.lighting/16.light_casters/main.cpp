@@ -290,7 +290,6 @@ while (!glfwWindowShouldClose(window)) {
     setPointLights(settings, objectShader, NR_POINT_LIGHTS);
 
     // set spot light property
-    // TODO finish setting this up [do this one first]
     objectShader.setVec3("flashLight.position"    , camera->cameraPos);
     objectShader.setVec3("flashLight.direction"   , camera->cameraFront);
     objectShader.setVec3("flashLight.ambient"     , glm::vec3(0.2));
