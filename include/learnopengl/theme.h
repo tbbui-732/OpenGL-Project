@@ -32,7 +32,7 @@ private:
     std::string pointLight;
     std::string spotLight;
 
-    void normalizeRGB(glm::vec3& rgb) {
+    void normalizeColor(glm::vec3& rgb) {
         rgb.x /= 255.0f; 
         rgb.y /= 255.0f; 
         rgb.z /= 255.0f; 
@@ -45,9 +45,17 @@ public:
         const std::string& _pointLight, 
         const std::string& _spotLight ) 
     {
+        // set private variables
+        this->shaderProgram = _shaderProgram;
+        this->dirLight      = _dirLight;
+        this->pointLight    = _pointLight;
+        this->spotLight     = _spotLight;
+        
+        // update colors
         colors.reserve(rgbVals.size());
         for (std::vector<int> rgbVal : rgbVals) {
-            glm::vec3 color = glm::vec3(rgbVal[0], rgbVal[1], rgbVal[2]);
+            glm::vec3 color(rgbVal[0], rgbVal[1], rgbVal[2]);
+            normalizeColor(color);
             colors.push_back(color);
         }
     }
