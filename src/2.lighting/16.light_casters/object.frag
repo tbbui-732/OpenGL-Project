@@ -61,10 +61,6 @@ uniform Material material;
 // Lighting
 uniform DirectionalLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
-
-// TODO: Write up a function to calculate the SpotLight.
-// In this case, I want to create a flashlight, so it'll be attached to 
-//  the player... GOODLUCK!
 uniform SpotLight flashLight; // attached to the player
 
 // ----- FRAGMENT SHADER MAIN ----- 
