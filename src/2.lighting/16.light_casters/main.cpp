@@ -1,4 +1,9 @@
-// local includes TODO: need to fix CMake so it targets the include directory
+//#include "glad/glad.h"
+//#include "glfw/glfw3.h"
+//#include "learnopengl/shader.h"
+//#include "learnopengl/camera.h"
+//#include "stb_image/stb_image.h"
+
 #include "../../../include/glad/glad.h"
 #include "../../../include/glfw/glfw3.h"
 #include "../../../include/learnopengl/shader.h"
