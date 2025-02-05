@@ -282,9 +282,9 @@ while (!glfwWindowShouldClose(window)) {
 
     // set directional light properties 
     objectShader.setVec3("dirLight.direction"   , glm::vec3(1.0));
-    objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.2));
-    objectShader.setVec3("dirLight.diffuse"     , glm::vec3(0.5));
-    objectShader.setVec3("dirLight.specular"    , glm::vec3(1.0));
+    objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.05));
+    objectShader.setVec3("dirLight.diffuse"     , glm::vec3(0.2));
+    objectShader.setVec3("dirLight.specular"    , glm::vec3(0.5));
 
     // set point light(s) properties
     setPointLights(settings, objectShader, NR_POINT_LIGHTS);
