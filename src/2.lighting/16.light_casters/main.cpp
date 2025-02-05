@@ -39,6 +39,7 @@ void processInput(GLFWwindow *window);
 void logError(std::string comment);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos); // xpos and ypos are the mouse's current position
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 float genRandFloat(float min, float max);
 unsigned int loadTexture(std::string texPath);
 void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
@@ -55,6 +56,10 @@ float lastFrame = 0.0f;
 
 // camera
 Camera* camera = new Camera(SCR_WIDTH, SCR_HEIGHT);
+
+// toggles flashlight state in object fragment
+bool flashLightOn = false;
+
 
 int main() {
 //////////////////////////////
@@ -89,6 +94,7 @@ glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // hide mouse and capture its movement
 glfwSetCursorPosCallback(window, mouse_callback);
 glfwSetScrollCallback(window, scroll_callback);
+glfwSetKeyCallback(window, key_callback);
 
 
 ////////////////
@@ -289,17 +295,20 @@ while (!glfwWindowShouldClose(window)) {
     // set point light(s) properties
     setPointLights(settings, objectShader, NR_POINT_LIGHTS);
 
-    // set spot light property
-    objectShader.setVec3("flashLight.position"    , camera->cameraPos);
-    objectShader.setVec3("flashLight.direction"   , camera->cameraFront);
-    objectShader.setVec3("flashLight.ambient"     , glm::vec3(0.2));
-    objectShader.setVec3("flashLight.diffuse"     , glm::vec3(0.9));
-    objectShader.setVec3("flashLight.specular"    , glm::vec3(1.0));
-    objectShader.setFloat("flashLight.constant"   , 1.0f);
-    objectShader.setFloat("flashLight.linear"     , 0.09f);
-    objectShader.setFloat("flashLight.quadratic"  , 0.032f);
-    objectShader.setFloat("flashLight.innerAngle" , glm::cos(glm::radians(12.0f)));
-    objectShader.setFloat("flashLight.outerAngle" , glm::cos(glm::radians(17.0f)));
+    // set spot light property (flashlight)
+    objectShader.setBool("flashLightOn", flashLightOn);
+
+    if (flashLightOn) {
+        objectShader.setVec3("flashLight.position"    , camera->cameraPos);
+        objectShader.setVec3("flashLight.direction"   , camera->cameraFront);
+        objectShader.setVec3("flashLight.diffuse"     , glm::vec3(1.0));
+        objectShader.setVec3("flashLight.specular"    , glm::vec3(1.0));
+        objectShader.setFloat("flashLight.constant"   , 1.0f);
+        objectShader.setFloat("flashLight.linear"     , 0.09f);
+        objectShader.setFloat("flashLight.quadratic"  , 0.032f);
+        objectShader.setFloat("flashLight.innerAngle" , glm::cos(glm::radians(12.0f)));
+        objectShader.setFloat("flashLight.outerAngle" , glm::cos(glm::radians(17.0f)));
+    }
 
     // set object material properties
     objectShader.setInt("material.diffuse", 0);
@@ -412,6 +421,16 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) { // xpos 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     camera->processScrollMovement(yoffset, 0.25f);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (action == GLFW_RELEASE) {
+        return;
+    }
+
+    if (key == GLFW_KEY_F) {
+        flashLightOn = !flashLightOn;
+    }
 }
 
 unsigned int loadTexture(std::string texPath) {

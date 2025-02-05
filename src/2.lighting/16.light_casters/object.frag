@@ -62,6 +62,7 @@ uniform Material material;
 uniform DirectionalLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight flashLight; // attached to the player
+uniform bool flashLightOn = false;
 
 // ----- FRAGMENT SHADER MAIN ----- 
 void main() {
@@ -78,7 +79,9 @@ void main() {
     }
 
     // TODO: phase 3: spot lights
-    result += CalcSpotLight(flashLight, normal, viewDir);
+    if (flashLightOn) {
+        result += CalcSpotLight(flashLight, normal, viewDir);
+    }
 
     FragColor = vec4(result, 1.0);
 } 
