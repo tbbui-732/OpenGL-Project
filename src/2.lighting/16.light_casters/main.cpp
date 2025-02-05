@@ -18,6 +18,7 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <unordered_map>
 
 // structs
 typedef struct Attenuation {
@@ -37,6 +38,18 @@ typedef struct PointLightSetting {
     Phong       phong;
     Attenuation attenuation;
 } PointLightSetting;
+
+// enums
+enum PhongTheme {
+    NORMAL,
+    DESERT,
+    FACTORY,
+    HORROR,
+    BIOCHEMICAL,
+};
+
+// global map to set background color
+std::unordered_map<PhongTheme, glm::vec3> bgColMap;
 
 // declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -72,6 +85,13 @@ int main() {
 //////////////////////////////
 // set random seed
 srand(static_cast<unsigned int>(time(0)));
+
+// map for colors
+bgColMap[NORMAL]        = glm::vec3(0.1f);
+bgColMap[FACTORY]       = glm::vec3(0.3f);
+bgColMap[HORROR]        = glm::vec3(0.0f);
+bgColMap[BIOCHEMICAL]   = glm::vec3(0.95f);
+bgColMap[DESERT]        = glm::vec3(255.0 / 255.0, 182.0 / 255.0, 66.0 / 255.0);
 
 
 ////////////////
@@ -280,7 +300,8 @@ while (!glfwWindowShouldClose(window)) {
     processInput(window);
 
     // set background
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(background.x, background.y, background.z, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // matrices
@@ -485,7 +506,7 @@ float genRandFloat(float min, float max) {
     return min + (max - min) * rand() / RAND_MAX;
 }
 
-void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) { // pls uwu 🥺👉👈
+void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) {
     // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
     //  scope of this project anyways
     if (MAX_POINT_LIGHTS > 9) {
