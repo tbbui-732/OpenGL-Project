@@ -48,8 +48,9 @@ enum PhongTheme {
     BIOCHEMICAL,
 };
 
-// global map to set background color
+// global maps for theme colors
 std::unordered_map<PhongTheme, glm::vec3> bgColMap;
+std::unordered_map<PhongTheme, Phong> phongMap;
 
 // declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -61,6 +62,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 float genRandFloat(float min, float max);
 unsigned int loadTexture(std::string texPath);
 void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
+void setTheme(Phong& phong, glm::vec3& background, PhongTheme theme);
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
@@ -86,12 +88,51 @@ int main() {
 // set random seed
 srand(static_cast<unsigned int>(time(0)));
 
-// map for colors
+// map background colors
 bgColMap[NORMAL]        = glm::vec3(0.1f);
 bgColMap[FACTORY]       = glm::vec3(0.3f);
 bgColMap[HORROR]        = glm::vec3(0.0f);
 bgColMap[BIOCHEMICAL]   = glm::vec3(0.95f);
 bgColMap[DESERT]        = glm::vec3(255.0 / 255.0, 182.0 / 255.0, 66.0 / 255.0);
+
+// map phong colors (NOTE: there's def a way better of doing this, but it's okay for now)
+Phong normalPhong;
+Phong desertPhong;
+Phong factoryPhong;
+Phong horrorPhong;
+Phong biochemPhong;
+
+normalPhong = {
+    glm::vec3(),
+    glm::vec3(),
+    glm::vec3(),
+};
+desertPhong = {
+    glm::vec3(),
+    glm::vec3(),
+    glm::vec3(),
+};
+factoryPhong = {
+    glm::vec3(),
+    glm::vec3(),
+    glm::vec3(),
+};
+horrorPhong = {
+    glm::vec3(),
+    glm::vec3(),
+    glm::vec3(),
+};
+biochemPhong = {
+    glm::vec3(),
+    glm::vec3(),
+    glm::vec3(),
+};
+
+phongMap[NORMAL]      = normalPhong;
+phongMap[DESERT]      = desertPhong;
+phongMap[FACTORY]     = factoryPhong;
+phongMap[HORROR]      = horrorPhong;
+phongMap[BIOCHEMICAL] = biochemPhong;
 
 
 ////////////////
@@ -224,7 +265,11 @@ for (int pointLightIdx = 0; pointLightIdx < NR_POINT_LIGHTS; ++pointLightIdx) {
 
 // generate multiple point light settings
 Attenuation att = { 1.0f, 0.09f, 0.032f };
-Phong phong = { glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f), };
+
+// TODO: set theme here
+Phong phong;
+glm::vec3 background;
+setTheme(phong, background, NORMAL);
 
 std::vector<PointLightSetting> settings;
 settings.reserve(NR_POINT_LIGHTS);
@@ -236,7 +281,7 @@ for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     z = genRandFloat(-3, 3);
     glm::vec3 pos(x, y, z);
 
-    PointLightSetting pls = {
+    PointLightSetting pls = { // uwu 🥺👉👈
         pos, phong, att        
     };
 
@@ -530,4 +575,8 @@ void setPointLights(const std::vector<PointLightSetting>& settings, const Shader
         shaderProgram.setFloat(plStr + ".linear"   , pls.attenuation.linear);
         shaderProgram.setFloat(plStr + ".quadratic", pls.attenuation.quadratic);
     }
+}
+
+// TODO: work on this functionality
+void setTheme(Phong& phong, glm::vec3& background, PhongTheme theme) {
 }
