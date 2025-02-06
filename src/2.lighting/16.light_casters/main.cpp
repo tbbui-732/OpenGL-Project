@@ -18,7 +18,6 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include <unordered_map>
 
 // structs
 typedef struct Attenuation {
@@ -33,24 +32,18 @@ typedef struct Phong {
     glm::vec3 specular;
 } Phong;
 
-typedef struct PointLightSetting {
+typedef struct DirectionalLight {
+    glm::vec3   position;
+    Phong       phong; 
+} DirectionalLight;
+
+typedef struct PointLight {
     glm::vec3   position;
     Phong       phong;
     Attenuation attenuation;
-} PointLightSetting;
+} PointLight;
 
-// enums
-enum PhongTheme {
-    NORMAL,
-    DESERT,
-    FACTORY,
-    HORROR,
-    BIOCHEMICAL,
-};
-
-// global maps for theme colors
-std::unordered_map<PhongTheme, glm::vec3> bgColMap;
-std::unordered_map<PhongTheme, Phong> phongMap;
+#include "../../../include/learnopengl/theme.h"
 
 // declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
