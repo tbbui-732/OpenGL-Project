@@ -14,6 +14,8 @@ Completed Part 1: Basic OpenGL, which covers foundational graphics concepts.
 * Simulated camera
 
 Completed Part 2: Basic Lights, which covers phong-lighting, diffuse/specular maps, and combining multiple types of lights
+
+
 <img width="720" alt="THEME=FACTORY" src="https://github.com/user-attachments/assets/0bd9cceb-abe9-4e37-8292-cfce38069ca3" />
 <img width="720" alt="THEME=HORROR" src="https://github.com/user-attachments/assets/42de1253-473a-47fe-8934-93603d1d2ddd" />
 <img width="720" alt="THEME=NORMAL" src="https://github.com/user-attachments/assets/b424957a-7846-4860-8471-8d06bc6edda4" />
