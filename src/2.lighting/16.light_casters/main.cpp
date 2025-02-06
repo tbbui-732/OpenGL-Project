@@ -39,6 +39,7 @@ typedef struct DirectionalLight {
 
 typedef struct PointLight {
     glm::vec3   position;
+    glm::vec3   baseColor;
     Phong       phong;
     Attenuation attenuation;
 } PointLight;
@@ -61,7 +62,7 @@ const unsigned int SCR_WIDTH    = 1200;
 const unsigned int SCR_HEIGHT   = 800;
 const std::string shaderPath    = std::filesystem::current_path().string() + "/../src/2.lighting/16.light_casters/"; // NOTE: make sure to update this correctly!
 const std::string texturePath   = std::filesystem::current_path().string() + "/../resources/textures/"; // NOTE: make sure to update this correctly!
-const Theme::PhongTheme THEME   = Theme::NORMAL;
+const Theme::PhongTheme THEME   = Theme::HORROR;
 const Attenuation att = { 1.0f, 0.09f, 0.032f };
 
 // frames
@@ -210,22 +211,11 @@ DirectionalLight dirLight;
 dirLight.direction = glm::vec3(0.0, 1.0, 0.0);
 Theme::setDirectionLightPhong(dirLight, THEME);
 
-// generate point light positions
+// generate point light settings
 const int NR_POINT_LIGHTS = 4;
-std::vector<glm::vec3> pointLightPos;
-pointLightPos.reserve(NR_POINT_LIGHTS);
-for (int pointLightIdx = 0; pointLightIdx < NR_POINT_LIGHTS; ++pointLightIdx) {
-    float x, y, z;
-    x = genRandFloat(-3, 3);
-    y = genRandFloat(-3, 3);
-    z = genRandFloat(-3, 3);
-    glm::vec3 newPos(x, y, z);
-    pointLightPos.push_back(newPos);
-}
-
-// generate multiple point light settings
 std::vector<PointLight> PointLights;
 PointLights.reserve(NR_POINT_LIGHTS);
+
 for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     int x, y, z;
     x = genRandFloat(-3, 3);
@@ -316,7 +306,6 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.setVec3("dirLight.specular"    , dirLight.phong.specular);
 
     // set point light(s) properties
-    // TODO: use point light struct to update values
     setPointLights(PointLights, objectShader, NR_POINT_LIGHTS);
 
     // set spot light property (flashlight)
@@ -369,13 +358,13 @@ while (!glfwWindowShouldClose(window)) {
 
     for (int lampIdx = 0; lampIdx < NR_POINT_LIGHTS; ++lampIdx) {
         model = glm::mat4(1.0f);
-        model = glm::translate(model, pointLightPos[lampIdx]);
+        model = glm::translate(model, PointLights[lampIdx].position);
         model = glm::scale(model, glm::vec3(0.2f));
 
         lampShader.setMat4("model", model);
         lampShader.setMat4("view", view);
         lampShader.setMat4("projection", projection);
-        lampShader.setVec3("lightColor", glm::vec3(1.0f));
+        lampShader.setVec3("lightColor", PointLights[lampIdx].baseColor);
 
         glBindVertexArray(lampVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
