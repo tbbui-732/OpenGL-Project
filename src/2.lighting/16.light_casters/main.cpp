@@ -18,7 +18,6 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include <unordered_map>
 
 // structs
 typedef struct Attenuation {
@@ -33,24 +32,19 @@ typedef struct Phong {
     glm::vec3 specular;
 } Phong;
 
-typedef struct PointLightSetting {
+typedef struct DirectionalLight {
+    glm::vec3   direction;
+    Phong       phong; 
+} DirectionalLight;
+
+typedef struct PointLight {
     glm::vec3   position;
+    glm::vec3   baseColor;
     Phong       phong;
     Attenuation attenuation;
-} PointLightSetting;
+} PointLight;
 
-// enums
-enum PhongTheme {
-    NORMAL,
-    DESERT,
-    FACTORY,
-    HORROR,
-    BIOCHEMICAL,
-};
-
-// global maps for theme colors
-std::unordered_map<PhongTheme, glm::vec3> bgColMap;
-std::unordered_map<PhongTheme, Phong> phongMap;
+#include "../../../include/learnopengl/theme.h"
 
 // declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -61,14 +55,15 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 float genRandFloat(float min, float max);
 unsigned int loadTexture(std::string texPath);
-void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
-void setTheme(Phong& phong, glm::vec3& background, PhongTheme theme);
+void setPointLights(const std::vector<PointLight>& PointLights, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
 const unsigned int SCR_HEIGHT   = 800;
 const std::string shaderPath    = std::filesystem::current_path().string() + "/../src/2.lighting/16.light_casters/"; // NOTE: make sure to update this correctly!
 const std::string texturePath   = std::filesystem::current_path().string() + "/../resources/textures/"; // NOTE: make sure to update this correctly!
+const Theme::PhongTheme THEME   = Theme::NORMAL;
+const Attenuation att = { 1.0f, 0.09f, 0.032f };
 
 // frames
 float deltaTime = 0.0f;
@@ -87,53 +82,6 @@ int main() {
 //////////////////////////////
 // set random seed
 srand(static_cast<unsigned int>(time(0)));
-
-// map background colors
-bgColMap[NORMAL]        = glm::vec3(0.1f);
-bgColMap[FACTORY]       = glm::vec3(0.3f);
-bgColMap[HORROR]        = glm::vec3(0.0f);
-bgColMap[BIOCHEMICAL]   = glm::vec3(0.95f);
-bgColMap[DESERT]        = glm::vec3(255.0 / 255.0, 182.0 / 255.0, 66.0 / 255.0);
-
-// map phong colors (NOTE: there's def a way better of doing this, but it's okay for now)
-Phong normalPhong;
-Phong desertPhong;
-Phong factoryPhong;
-Phong horrorPhong;
-Phong biochemPhong;
-
-normalPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-desertPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-factoryPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-horrorPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-biochemPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-
-phongMap[NORMAL]      = normalPhong;
-phongMap[DESERT]      = desertPhong;
-phongMap[FACTORY]     = factoryPhong;
-phongMap[HORROR]      = horrorPhong;
-phongMap[BIOCHEMICAL] = biochemPhong;
-
 
 ////////////////
 ///// GLFW /////
@@ -172,12 +120,10 @@ if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     return -1;
 }
 
-
 //////////////////
 ///// OPENGL /////
 //////////////////
 glEnable(GL_DEPTH_TEST);
-
 
 //////////////////
 ///// SHADER /////
@@ -253,26 +199,22 @@ for (int i = 0; i < nCubes; i++) {
     cubePos.push_back(pos);
 }
 
-// generate point light positions
-const int NR_POINT_LIGHTS = 4;
-std::vector<glm::vec3> pointLightPos;
-pointLightPos.reserve(NR_POINT_LIGHTS);
-
-for (int pointLightIdx = 0; pointLightIdx < NR_POINT_LIGHTS; ++pointLightIdx) {
-    glm::vec3 newPos(genRandFloat(-3, 3), genRandFloat(-3, 3), genRandFloat(-3, 3));
-    pointLightPos.push_back(newPos);
-}
-
-// generate multiple point light settings
-Attenuation att = { 1.0f, 0.09f, 0.032f };
-
-// TODO: set theme here
-Phong phong;
+//////////////////////////
+///// LIGHTING/THEME /////
+//////////////////////////
+// set properties for background
 glm::vec3 background;
-setTheme(phong, background, NORMAL);
+Theme::setBackgroundColor(background, THEME);
 
-std::vector<PointLightSetting> settings;
-settings.reserve(NR_POINT_LIGHTS);
+// set properties for directional light
+DirectionalLight dirLight;
+dirLight.direction = glm::vec3(0.0, 1.0, 0.0);
+Theme::setDirectionLightPhong(dirLight, THEME);
+
+// generate point light settings
+const int NR_POINT_LIGHTS = 4;
+std::vector<PointLight> PointLights;
+PointLights.reserve(NR_POINT_LIGHTS);
 
 for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     int x, y, z;
@@ -281,11 +223,12 @@ for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     z = genRandFloat(-3, 3);
     glm::vec3 pos(x, y, z);
 
-    PointLightSetting pls = { // uwu 🥺👉👈
-        pos, phong, att        
-    };
+    PointLight pl;
+    pl.position = pos;
+    pl.attenuation = att;
+    Theme::setPointLightPhong(pl, THEME);
 
-    settings.push_back(pls);
+    PointLights.push_back(pl);
 }
 
 ////////////////////
@@ -345,7 +288,6 @@ while (!glfwWindowShouldClose(window)) {
     processInput(window);
 
     // set background
-    //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClearColor(background.x, background.y, background.z, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -358,13 +300,13 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.use();
 
     // set directional light properties 
-    objectShader.setVec3("dirLight.direction"   , glm::vec3(10.0));
-    objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.1));
-    objectShader.setVec3("dirLight.diffuse"     , glm::vec3(0.3));
-    objectShader.setVec3("dirLight.specular"    , glm::vec3(0.7));
+    objectShader.setVec3("dirLight.direction"   , dirLight.direction);
+    objectShader.setVec3("dirLight.ambient"     , dirLight.phong.ambient);
+    objectShader.setVec3("dirLight.diffuse"     , dirLight.phong.diffuse);
+    objectShader.setVec3("dirLight.specular"    , dirLight.phong.specular);
 
     // set point light(s) properties
-    setPointLights(settings, objectShader, NR_POINT_LIGHTS);
+    setPointLights(PointLights, objectShader, NR_POINT_LIGHTS);
 
     // set spot light property (flashlight)
     objectShader.setBool("flashLightOn", flashLightOn);
@@ -416,13 +358,13 @@ while (!glfwWindowShouldClose(window)) {
 
     for (int lampIdx = 0; lampIdx < NR_POINT_LIGHTS; ++lampIdx) {
         model = glm::mat4(1.0f);
-        model = glm::translate(model, pointLightPos[lampIdx]);
+        model = glm::translate(model, PointLights[lampIdx].position);
         model = glm::scale(model, glm::vec3(0.2f));
 
         lampShader.setMat4("model", model);
         lampShader.setMat4("view", view);
         lampShader.setMat4("projection", projection);
-        lampShader.setVec3("lightColor", glm::vec3(1.0f));
+        lampShader.setVec3("lightColor", PointLights[lampIdx].baseColor);
 
         glBindVertexArray(lampVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -551,7 +493,7 @@ float genRandFloat(float min, float max) {
     return min + (max - min) * rand() / RAND_MAX;
 }
 
-void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) {
+void setPointLights(const std::vector<PointLight>& PointLights, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) {
     // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
     //  scope of this project anyways
     if (MAX_POINT_LIGHTS > 9) {
@@ -563,20 +505,16 @@ void setPointLights(const std::vector<PointLightSetting>& settings, const Shader
     char plChArr[sz];
     int idx = 0;
 
-    for (const PointLightSetting& pls : settings) {
+    for (const PointLight& pl : PointLights) {
         snprintf(plChArr, sz, "pointLights[%d]", idx++);
         const std::string plStr(plChArr);
 
-        shaderProgram.setVec3 (plStr + ".position" , pls.position);
-        shaderProgram.setVec3 (plStr + ".ambient"  , pls.phong.ambient);
-        shaderProgram.setVec3 (plStr + ".diffuse"  , pls.phong.diffuse);
-        shaderProgram.setVec3 (plStr + ".specular" , pls.phong.specular);
-        shaderProgram.setFloat(plStr + ".constant" , pls.attenuation.constant);
-        shaderProgram.setFloat(plStr + ".linear"   , pls.attenuation.linear);
-        shaderProgram.setFloat(plStr + ".quadratic", pls.attenuation.quadratic);
+        shaderProgram.setVec3 (plStr + ".position" , pl.position);
+        shaderProgram.setVec3 (plStr + ".ambient"  , pl.phong.ambient);
+        shaderProgram.setVec3 (plStr + ".diffuse"  , pl.phong.diffuse);
+        shaderProgram.setVec3 (plStr + ".specular" , pl.phong.specular);
+        shaderProgram.setFloat(plStr + ".constant" , pl.attenuation.constant);
+        shaderProgram.setFloat(plStr + ".linear"   , pl.attenuation.linear);
+        shaderProgram.setFloat(plStr + ".quadratic", pl.attenuation.quadratic);
     }
-}
-
-// TODO: work on this functionality
-void setTheme(Phong& phong, glm::vec3& background, PhongTheme theme) {
 }
