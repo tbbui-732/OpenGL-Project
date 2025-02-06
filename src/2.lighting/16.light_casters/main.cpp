@@ -33,7 +33,7 @@ typedef struct Phong {
 } Phong;
 
 typedef struct DirectionalLight {
-    glm::vec3   position;
+    glm::vec3   direction;
     Phong       phong; 
 } DirectionalLight;
 
@@ -207,7 +207,7 @@ Theme::setBackgroundColor(background, THEME);
 
 // set properties for directional light
 DirectionalLight dirLight;
-dirLight.position = glm::vec3(20.0f);
+dirLight.direction = glm::vec3(0.0, 1.0, 0.0);
 Theme::setDirectionLightPhong(dirLight, THEME);
 
 // generate point light positions
@@ -310,11 +310,10 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.use();
 
     // set directional light properties 
-    // TODO: use directional light struct to update values
-    objectShader.setVec3("dirLight.direction"   , glm::vec3(10.0));
-    objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.1));
-    objectShader.setVec3("dirLight.diffuse"     , glm::vec3(0.3));
-    objectShader.setVec3("dirLight.specular"    , glm::vec3(0.7));
+    objectShader.setVec3("dirLight.direction"   , dirLight.direction);
+    objectShader.setVec3("dirLight.ambient"     , dirLight.phong.ambient);
+    objectShader.setVec3("dirLight.diffuse"     , dirLight.phong.diffuse);
+    objectShader.setVec3("dirLight.specular"    , dirLight.phong.specular);
 
     // set point light(s) properties
     // TODO: use point light struct to update values
