@@ -62,7 +62,7 @@ const unsigned int SCR_WIDTH    = 1200;
 const unsigned int SCR_HEIGHT   = 800;
 const std::string shaderPath    = std::filesystem::current_path().string() + "/../src/2.lighting/16.light_casters/"; // NOTE: make sure to update this correctly!
 const std::string texturePath   = std::filesystem::current_path().string() + "/../resources/textures/"; // NOTE: make sure to update this correctly!
-const Theme::PhongTheme THEME   = Theme::HORROR;
+const Theme::PhongTheme THEME   = Theme::NORMAL;
 const Attenuation att = { 1.0f, 0.09f, 0.032f };
 
 // frames
