@@ -70,7 +70,7 @@ namespace Theme {
     }  
 
     // TODO: Needs testing
-    inline void setDirectionLightPhong(Shader& shaderProgram, DirectionalLight& dirLight, const PhongTheme theme) {
+    inline void setDirectionLightPhong(DirectionalLight& dirLight, const PhongTheme theme) {
         glm::vec3 ambient, diffuse, specular;
 
         switch (theme) {
@@ -105,7 +105,7 @@ namespace Theme {
         dirLight.phong = {ambient, diffuse, specular};
     }  
 
-    inline void setPointLightPhong(Shader& shaderProgram, PointLight& pointLight, const PhongTheme theme) {
+    inline void setPointLightPhong(PointLight& pointLight, const PhongTheme theme) {
         glm::vec3 ambient, diffuse, specular;
 
         switch (theme) {
@@ -139,12 +139,8 @@ namespace Theme {
         }
 
         pointLight.phong = {ambient, diffuse, specular};
-         
     }  
 
-    inline void setSpotLightPhong() {
-
-    }  
 
     inline glm::vec3 getColor(Color color) {
         std::vector<float> colorArr = rgbVals[color];
