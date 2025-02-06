@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Executables
 set(CHAPTER "3.model_loading") # NOTE: update this depending on the chapter being built!
-set(SUBCHAPTER "19.assimp")
+set(SUBCHAPTER "model")
 add_executable(${PROJECT_NAME} src/${CHAPTER}/${SUBCHAPTER}/main.cpp src/glad.c src/stb_image.c)
 
 # Libraries
