@@ -54,14 +54,15 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 float genRandFloat(float min, float max);
 unsigned int loadTexture(std::string texPath);
-void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
-void setTheme(Phong& phong, glm::vec3& background, PhongTheme theme);
+void setPointLights(const std::vector<PointLight>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
 const unsigned int SCR_HEIGHT   = 800;
 const std::string shaderPath    = std::filesystem::current_path().string() + "/../src/2.lighting/16.light_casters/"; // NOTE: make sure to update this correctly!
 const std::string texturePath   = std::filesystem::current_path().string() + "/../resources/textures/"; // NOTE: make sure to update this correctly!
+const Theme::PhongTheme THEME   = Theme::BIOCHEM;
+const Attenuation att = { 1.0f, 0.09f, 0.032f };
 
 // frames
 float deltaTime = 0.0f;
