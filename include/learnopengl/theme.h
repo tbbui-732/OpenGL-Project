@@ -66,13 +66,42 @@ namespace Theme {
                 break;
         }
 
-        std::vector<float> colorArr = rgbVals[color];
-        glm::vec3 colorVec = arrToVec(colorArr);
-        background = colorVec;
+        background = getColor(color);
     }  
 
-    inline void setDirectionLightPhong(Shader& shaderProgram) {
-        
+    inline void setDirectionLightPhong(Shader& shaderProgram, DirectionalLight& dirLight, const PhongTheme theme) {
+        glm::vec3 ambient, diffuse, specular;
+
+        switch (theme) {
+            case NORMAL: {
+                ambient  = glm::vec3(0.2f);
+                diffuse  = glm::vec3(0.5f);
+                specular = glm::vec3(1.0f);
+                break;
+            }
+            case HORROR: {
+                ambient  = glm::vec3(0.0f);
+                diffuse  = glm::vec3(0.0f);
+                specular = glm::vec3(0.0f);
+                break;
+            }
+            case FACTORY: {
+                glm::vec3 blue = getColor(LIGHT_BLUE);
+                ambient  =  blue * 0.2f;
+                diffuse  =  blue * 0.5f;
+                specular =  blue * 1.0f;
+                break;
+            }
+            case BIOCHEM: {
+                glm::vec3 green = getColor(LIGHT_GREEN);
+                ambient  =  green * 0.2f;
+                diffuse  =  green * 0.5f;
+                specular =  green * 1.0f;
+                break;
+            }
+        }
+
+        dirLight.phong = {ambient, diffuse, specular};
     }  
 
     inline void setPointLightPhong() {
