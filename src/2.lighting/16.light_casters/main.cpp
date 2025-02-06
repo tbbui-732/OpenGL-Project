@@ -54,14 +54,14 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 float genRandFloat(float min, float max);
 unsigned int loadTexture(std::string texPath);
-void setPointLights(const std::vector<PointLight>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
+void setPointLights(const std::vector<PointLight>& PointLights, const Shader& shaderProgram, const int MAX_POINT_LIGHTS);
 
 // settings
 const unsigned int SCR_WIDTH    = 1200;
 const unsigned int SCR_HEIGHT   = 800;
 const std::string shaderPath    = std::filesystem::current_path().string() + "/../src/2.lighting/16.light_casters/"; // NOTE: make sure to update this correctly!
 const std::string texturePath   = std::filesystem::current_path().string() + "/../resources/textures/"; // NOTE: make sure to update this correctly!
-const Theme::PhongTheme THEME   = Theme::BIOCHEM;
+const Theme::PhongTheme THEME   = Theme::NORMAL;
 const Attenuation att = { 1.0f, 0.09f, 0.032f };
 
 // frames
@@ -224,8 +224,8 @@ for (int pointLightIdx = 0; pointLightIdx < NR_POINT_LIGHTS; ++pointLightIdx) {
 }
 
 // generate multiple point light settings
-std::vector<PointLight> settings;
-settings.reserve(NR_POINT_LIGHTS);
+std::vector<PointLight> PointLights;
+PointLights.reserve(NR_POINT_LIGHTS);
 for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     int x, y, z;
     x = genRandFloat(-3, 3);
@@ -238,7 +238,7 @@ for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     pl.attenuation = att;
     Theme::setPointLightPhong(pl, THEME);
 
-    settings.push_back(pl);
+    PointLights.push_back(pl);
 }
 
 ////////////////////
@@ -317,7 +317,7 @@ while (!glfwWindowShouldClose(window)) {
 
     // set point light(s) properties
     // TODO: use point light struct to update values
-    setPointLights(settings, objectShader, NR_POINT_LIGHTS);
+    setPointLights(PointLights, objectShader, NR_POINT_LIGHTS);
 
     // set spot light property (flashlight)
     objectShader.setBool("flashLightOn", flashLightOn);
@@ -504,7 +504,7 @@ float genRandFloat(float min, float max) {
     return min + (max - min) * rand() / RAND_MAX;
 }
 
-void setPointLights(const std::vector<PointLight>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) {
+void setPointLights(const std::vector<PointLight>& PointLights, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) {
     // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
     //  scope of this project anyways
     if (MAX_POINT_LIGHTS > 9) {
@@ -516,16 +516,16 @@ void setPointLights(const std::vector<PointLight>& settings, const Shader& shade
     char plChArr[sz];
     int idx = 0;
 
-    for (const PointLight& pls : settings) {
+    for (const PointLight& pl : PointLights) {
         snprintf(plChArr, sz, "pointLights[%d]", idx++);
         const std::string plStr(plChArr);
 
-        shaderProgram.setVec3 (plStr + ".position" , pls.position);
-        shaderProgram.setVec3 (plStr + ".ambient"  , pls.phong.ambient);
-        shaderProgram.setVec3 (plStr + ".diffuse"  , pls.phong.diffuse);
-        shaderProgram.setVec3 (plStr + ".specular" , pls.phong.specular);
-        shaderProgram.setFloat(plStr + ".constant" , pls.attenuation.constant);
-        shaderProgram.setFloat(plStr + ".linear"   , pls.attenuation.linear);
-        shaderProgram.setFloat(plStr + ".quadratic", pls.attenuation.quadratic);
+        shaderProgram.setVec3 (plStr + ".position" , pl.position);
+        shaderProgram.setVec3 (plStr + ".ambient"  , pl.phong.ambient);
+        shaderProgram.setVec3 (plStr + ".diffuse"  , pl.phong.diffuse);
+        shaderProgram.setVec3 (plStr + ".specular" , pl.phong.specular);
+        shaderProgram.setFloat(plStr + ".constant" , pl.attenuation.constant);
+        shaderProgram.setFloat(plStr + ".linear"   , pl.attenuation.linear);
+        shaderProgram.setFloat(plStr + ".quadratic", pl.attenuation.quadratic);
     }
 }
