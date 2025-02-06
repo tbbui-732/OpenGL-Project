@@ -310,12 +310,14 @@ while (!glfwWindowShouldClose(window)) {
     objectShader.use();
 
     // set directional light properties 
+    // TODO: use directional light struct to update values
     objectShader.setVec3("dirLight.direction"   , glm::vec3(10.0));
     objectShader.setVec3("dirLight.ambient"     , glm::vec3(0.1));
     objectShader.setVec3("dirLight.diffuse"     , glm::vec3(0.3));
     objectShader.setVec3("dirLight.specular"    , glm::vec3(0.7));
 
     // set point light(s) properties
+    // TODO: use point light struct to update values
     setPointLights(settings, objectShader, NR_POINT_LIGHTS);
 
     // set spot light property (flashlight)
