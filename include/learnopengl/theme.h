@@ -106,41 +106,30 @@ namespace Theme {
     }  
 
     inline void setPointLightPhong(PointLight& pointLight, const PhongTheme theme) {
-        glm::vec3 ambient, diffuse, specular;
+        glm::vec3 ambient, diffuse, specular, color;
 
         switch (theme) {
-            case NORMAL: {
-                ambient  = glm::vec3(0.2f);
-                diffuse  = glm::vec3(0.5f);
-                specular = glm::vec3(1.0f);
+            case NORMAL:
+                color = glm::vec3(1.0f);
                 break;
-            }
-            case HORROR: {
-                glm::vec3 red = getColor(RED);
-                ambient  = red * 0.2f;
-                diffuse  = red * 0.5f;
-                specular = red * 1.0f;
+            case HORROR:
+                color = getColor(RED);
                 break;
-            }
-            case FACTORY: {
-                glm::vec3 blue = getColor(LIGHT_BLUE);
-                ambient  =  blue * 0.2f;
-                diffuse  =  blue * 0.5f;
-                specular =  blue * 1.0f;
+            case FACTORY:
+                color = getColor(LIGHT_BLUE);
                 break;
-            }
-            case BIOCHEM: {
-                glm::vec3 green = getColor(LIGHT_GREEN);
-                ambient  =  green * 0.2f;
-                diffuse  =  green * 0.5f;
-                specular =  green * 1.0f;
+            case BIOCHEM:
+                color = getColor(LIGHT_GREEN);
                 break;
-            }
         }
 
-        pointLight.phong = {ambient, diffuse, specular};
-    }  
+        ambient = color * 0.2f;
+        diffuse = color * 0.5f;
+        specular = color * 1.0f;
 
+        pointLight.phong = {ambient, diffuse, specular};
+        pointLight.baseColor = color;
+    }  
 
     inline glm::vec3 getColor(Color color) {
         std::vector<float> colorArr = rgbVals[color];
