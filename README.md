@@ -5,17 +5,15 @@ Welcome to my LearnOpenGL repository! This repo is dedicated to documenting and 
 ## About
 This repository serves as a collection of projects and experimentation from the LearnOpenGL text. It's a work-in-progress as I progress through each chapter.
 
-## Spinning Cubes and Camera
-This is ultimate culmination of Part 1. Please view it in the "camera" branch!
-Here's a demonstration of it here: https://www.youtube.com/watch?v=1TYUth0FZec
-
 ## Progress
-Currently, I have completed Part 1: Basics, which covers foundational graphics concepts.
+Completed Part 1: Basic OpenGL, which covers foundational graphics concepts.
 * Rendering a triangle
 * Shaders (texture and fragment)
 * Textures
 * Transformations
 * Simulated camera
+
+Completed Part 2: Basic Lights, which covers phong-lighting, diffuse/specular maps, and combining multiple types of lights
 
 ## Features
 * Writen in C++
