@@ -82,53 +82,6 @@ int main() {
 // set random seed
 srand(static_cast<unsigned int>(time(0)));
 
-// map background colors
-bgColMap[NORMAL]        = glm::vec3(0.1f);
-bgColMap[FACTORY]       = glm::vec3(0.3f);
-bgColMap[HORROR]        = glm::vec3(0.0f);
-bgColMap[BIOCHEMICAL]   = glm::vec3(0.95f);
-bgColMap[DESERT]        = glm::vec3(255.0 / 255.0, 182.0 / 255.0, 66.0 / 255.0);
-
-// map phong colors (NOTE: there's def a way better of doing this, but it's okay for now)
-Phong normalPhong;
-Phong desertPhong;
-Phong factoryPhong;
-Phong horrorPhong;
-Phong biochemPhong;
-
-normalPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-desertPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-factoryPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-horrorPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-biochemPhong = {
-    glm::vec3(),
-    glm::vec3(),
-    glm::vec3(),
-};
-
-phongMap[NORMAL]      = normalPhong;
-phongMap[DESERT]      = desertPhong;
-phongMap[FACTORY]     = factoryPhong;
-phongMap[HORROR]      = horrorPhong;
-phongMap[BIOCHEMICAL] = biochemPhong;
-
-
 ////////////////
 ///// GLFW /////
 ////////////////
