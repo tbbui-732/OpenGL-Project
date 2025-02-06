@@ -119,12 +119,10 @@ if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     return -1;
 }
 
-
 //////////////////
 ///// OPENGL /////
 //////////////////
 glEnable(GL_DEPTH_TEST);
-
 
 //////////////////
 ///// SHADER /////
@@ -200,27 +198,34 @@ for (int i = 0; i < nCubes; i++) {
     cubePos.push_back(pos);
 }
 
+//////////////////////////
+///// LIGHTING/THEME /////
+//////////////////////////
+// set properties for background
+glm::vec3 background;
+Theme::setBackgroundColor(background, THEME);
+
+// set properties for directional light
+DirectionalLight dirLight;
+dirLight.position = glm::vec3(20.0f);
+Theme::setDirectionLightPhong(dirLight, THEME);
+
 // generate point light positions
 const int NR_POINT_LIGHTS = 4;
 std::vector<glm::vec3> pointLightPos;
 pointLightPos.reserve(NR_POINT_LIGHTS);
-
 for (int pointLightIdx = 0; pointLightIdx < NR_POINT_LIGHTS; ++pointLightIdx) {
-    glm::vec3 newPos(genRandFloat(-3, 3), genRandFloat(-3, 3), genRandFloat(-3, 3));
+    float x, y, z;
+    x = genRandFloat(-3, 3);
+    y = genRandFloat(-3, 3);
+    z = genRandFloat(-3, 3);
+    glm::vec3 newPos(x, y, z);
     pointLightPos.push_back(newPos);
 }
 
 // generate multiple point light settings
-Attenuation att = { 1.0f, 0.09f, 0.032f };
-
-// TODO: set theme here
-Phong phong;
-glm::vec3 background;
-setTheme(phong, background, NORMAL);
-
-std::vector<PointLightSetting> settings;
+std::vector<PointLight> settings;
 settings.reserve(NR_POINT_LIGHTS);
-
 for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     int x, y, z;
     x = genRandFloat(-3, 3);
@@ -228,11 +233,12 @@ for (int idx = 0; idx < NR_POINT_LIGHTS; ++idx) {
     z = genRandFloat(-3, 3);
     glm::vec3 pos(x, y, z);
 
-    PointLightSetting pls = { // uwu 🥺👉👈
-        pos, phong, att        
-    };
+    PointLight pl;
+    pl.position = pos;
+    pl.attenuation = att;
+    Theme::setPointLightPhong(pl, THEME);
 
-    settings.push_back(pls);
+    settings.push_back(pl);
 }
 
 ////////////////////
@@ -292,7 +298,6 @@ while (!glfwWindowShouldClose(window)) {
     processInput(window);
 
     // set background
-    //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClearColor(background.x, background.y, background.z, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -498,7 +503,7 @@ float genRandFloat(float min, float max) {
     return min + (max - min) * rand() / RAND_MAX;
 }
 
-void setPointLights(const std::vector<PointLightSetting>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) {
+void setPointLights(const std::vector<PointLight>& settings, const Shader& shaderProgram, const int MAX_POINT_LIGHTS) {
     // NOTE: this is super restrictive, but i can't imagine myself adding more than 10 point lights for the
     //  scope of this project anyways
     if (MAX_POINT_LIGHTS > 9) {
@@ -510,7 +515,7 @@ void setPointLights(const std::vector<PointLightSetting>& settings, const Shader
     char plChArr[sz];
     int idx = 0;
 
-    for (const PointLightSetting& pls : settings) {
+    for (const PointLight& pls : settings) {
         snprintf(plChArr, sz, "pointLights[%d]", idx++);
         const std::string plStr(plChArr);
 
@@ -522,8 +527,4 @@ void setPointLights(const std::vector<PointLightSetting>& settings, const Shader
         shaderProgram.setFloat(plStr + ".linear"   , pls.attenuation.linear);
         shaderProgram.setFloat(plStr + ".quadratic", pls.attenuation.quadratic);
     }
-}
-
-// TODO: work on this functionality
-void setTheme(Phong& phong, glm::vec3& background, PhongTheme theme) {
 }
