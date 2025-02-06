@@ -69,6 +69,7 @@ namespace Theme {
         background = getColor(color);
     }  
 
+    // TODO: Needs testing
     inline void setDirectionLightPhong(Shader& shaderProgram, DirectionalLight& dirLight, const PhongTheme theme) {
         glm::vec3 ambient, diffuse, specular;
 
@@ -104,8 +105,41 @@ namespace Theme {
         dirLight.phong = {ambient, diffuse, specular};
     }  
 
-    inline void setPointLightPhong() {
+    inline void setPointLightPhong(Shader& shaderProgram, PointLight& pointLight, const PhongTheme theme) {
+        glm::vec3 ambient, diffuse, specular;
 
+        switch (theme) {
+            case NORMAL: {
+                ambient  = glm::vec3(0.2f);
+                diffuse  = glm::vec3(0.5f);
+                specular = glm::vec3(1.0f);
+                break;
+            }
+            case HORROR: {
+                glm::vec3 red = getColor(RED);
+                ambient  = red * 0.2f;
+                diffuse  = red * 0.5f;
+                specular = red * 1.0f;
+                break;
+            }
+            case FACTORY: {
+                glm::vec3 blue = getColor(LIGHT_BLUE);
+                ambient  =  blue * 0.2f;
+                diffuse  =  blue * 0.5f;
+                specular =  blue * 1.0f;
+                break;
+            }
+            case BIOCHEM: {
+                glm::vec3 green = getColor(LIGHT_GREEN);
+                ambient  =  green * 0.2f;
+                diffuse  =  green * 0.5f;
+                specular =  green * 1.0f;
+                break;
+            }
+        }
+
+        pointLight.phong = {ambient, diffuse, specular};
+         
     }  
 
     inline void setSpotLightPhong() {
