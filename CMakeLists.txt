@@ -8,13 +8,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Executables
-set(CHAPTER "2.lighting") # NOTE: update this depending on the chapter being built!
-set(SUBCHAPTER "16.light_casters")
+set(CHAPTER "3.model_loading") # NOTE: update this depending on the chapter being built!
+set(SUBCHAPTER "19.assimp")
 add_executable(${PROJECT_NAME} src/${CHAPTER}/${SUBCHAPTER}/main.cpp src/glad.c src/stb_image.c)
 
 # Libraries
-find_package(glfw3 REQUIRED)
-target_link_libraries(${PROJECT_NAME} glfw)
+set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
+
+find_library(GLFW glfw PATHS ${LIB_DIR})
+find_library(ASSIMP assimp PATHS ${LIB_DIR})
+
+target_link_libraries(${PROJECT_NAME} ${GLFW} ${ASSIMP})
 
 if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
