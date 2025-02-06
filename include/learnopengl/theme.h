@@ -45,6 +45,7 @@ namespace Theme {
     inline void setDirectionLightPhong();
     inline void setPointLightPhong();
     inline void setSpotLightPhong();
+    inline glm::vec3 getColor(Color color);
     inline glm::vec3 arrToVec(std::vector<float> arr);
     inline void rgbToUnit(glm::vec3& vec);
 
@@ -81,6 +82,12 @@ namespace Theme {
     inline void setSpotLightPhong() {
 
     }  
+
+    inline glm::vec3 getColor(Color color) {
+        std::vector<float> colorArr = rgbVals[color];
+        glm::vec3 colorVec = arrToVec(colorArr);
+        return colorVec;
+    }
 
     inline glm::vec3 arrToVec(std::vector<float> arr) {
         glm::vec3 vec(arr[0], arr[1], arr[2]);
