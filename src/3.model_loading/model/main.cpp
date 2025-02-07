@@ -18,6 +18,7 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 // structs
 typedef struct Attenuation {

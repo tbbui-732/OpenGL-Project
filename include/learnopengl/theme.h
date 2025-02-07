@@ -1,11 +1,6 @@
 #ifndef THEME_H
 #define THEME_H
 
-// NOTE: DELETE ONCE DONE USING! This is for LSP purposes only
-#include <vector>
-#include "../glm/glm.hpp"
-#include "../learnopengl/shader.h"
-
 namespace Theme {
     // enums
     enum PhongTheme { 
