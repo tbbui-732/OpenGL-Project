@@ -73,6 +73,37 @@ public:
     }
 
     void Draw(Shader &shader) {
-        // TODO ...
+        unsigned int diffuseNr = 1;
+        unsigned int specularNr = 1;
+
+        // bind the textures first
+        for (int texUnit = 0; texUnit < textures.size(); ++texUnit) {
+            glActiveTexture(GL_TEXTURE0 + texUnit);
+
+            // receive texture number (the "N" in diffuse_textureN)
+            std::string name, number;
+            name = textures[texUnit].type;
+
+            if (name == "texture_diffuse") {
+                number = std::to_string(diffuseNr++);
+            }
+            else if (name == "texture_specular") {
+                number = std::to_string(specularNr++);
+            }
+            else {
+                std::cout << "MESH::DRAW::ERROR - textures[tex].type is invalid! Must be 'texture_diffuse' or 'texture_specular'" << std::endl;
+                exit(1);
+            }
+
+            shader.setFloat(("material." + name + number).c_str(), texUnit);
+            glBindTexture(GL_TEXTURE_2D, textures[texUnit].id);
+        }
+        glActiveTexture(GL_TEXTURE0);
+
+        // draw mesh
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+        // unbind to prevent accidental state changes
+        glBindVertexArray(0);
     }
 };
