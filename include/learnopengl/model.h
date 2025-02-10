@@ -13,6 +13,7 @@
 class Model {
 private:
     std::string directory;
+    std::vector<Mesh> meshes;
 
     void loadModel (std::string path) {
         Assimp::Importer importer;
@@ -28,6 +29,20 @@ private:
 
         directory = path.substr(0, path.find_last_of('/'));
         processNode(scene->mRootNode, scene);
+    }
+
+    void processNode(aiNode *node, const aiScene *scene) {
+        // process node's meshes
+        for (int i = 0; i < node->mNumMeshes; ++i) {
+            int meshIdx = node->mMeshes[i];
+            aiMesh *mesh = scene->mMeshes[meshIdx];
+            meshes.push_back(processMesh(mesh, scene));        
+        }
+
+        // recursively process node's children's meshes too
+        for (int i = 0; i < node->mNumChildren; ++i) {
+            processNode(node->mChildren[i], scene);
+        }
     }
 public:
 };
