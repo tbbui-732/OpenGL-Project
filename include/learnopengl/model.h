@@ -44,5 +44,28 @@ private:
             processNode(node->mChildren[i], scene);
         }
     }
+
+    Mesh processMesh(aiMesh *mesh, const aiScene *scene) {
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<Texture> textures;
+
+        for (int i = 0; i < mesh->mNumVertices; ++i) {
+            Vertex vertex;
+            // process vertex positions
+            // ...
+            vertices.push_back(vertex);
+        }
+
+        // process indices
+        // ...
+
+        // process material
+        if (mesh->mMaterialIndex >= 0) {
+            // ...
+        }
+
+        return Mesh(vertices, indices, textures);
+    }
 public:
 };
