@@ -21,10 +21,6 @@ private:
     std::vector<Mesh> meshes;
     std::vector<Texture> textures_loaded;
 
-    unsigned int TextureFromFile(char *str, std::string directory) {
-        // TODO !
-        // ...
-    }
 
     std::vector<Texture> loadMaterialTextures(aiMaterial* material,
             aiTextureType type, std::string typeName)
