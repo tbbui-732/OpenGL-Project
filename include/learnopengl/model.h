@@ -15,6 +15,7 @@ class Model {
 private:
     std::string directory;
     std::vector<Mesh> meshes;
+    std::vector<Texture> textures_loaded;
 
     unsigned int TextureFromFile(char *str, std::string directory) {
         // TODO !
@@ -25,18 +26,30 @@ private:
             aiTextureType type, std::string typeName)
     {
         std::vector<Texture> textures;
+
         for (int i = 0; i < material->GetTextureCount(type); ++i) {
+            // skip if already texture path has already been loaded
+            bool skip = false;
+            for (int i = 0; i < textures_loaded.size(); ++i) {
+                Texture tex = textures_loaded[i];
+                if (std::strcmp(tex.path.data(), str.C_Str()) == 0) {
+                    textures.push_back(tex);
+                    skip = true;
+                }
+            }
+
             aiString str;
             material->GetTexture(type, i, &str);
 
-            Texture texture;
-            texture.id = TextureFromFile(str.C_Str(), directory);
-            texture.type = typeName;
-            texture.path = str;
-
-            textures.push_back(texture);
+            if (!skip) {
+                Texture texture;
+                texture.id = TextureFromFile(str.C_Str(), directory);
+                texture.type = typeName;
+                texture.path = str.C_Str();
+                textures.push_back(texture);
+                textures_loaded.push_back(texture);
+            }
         }
-
         return textures;
     }
 
