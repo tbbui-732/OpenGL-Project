@@ -36,7 +36,7 @@ private:
         for (int i = 0; i < node->mNumMeshes; ++i) {
             int meshIdx = node->mMeshes[i];
             aiMesh *mesh = scene->mMeshes[meshIdx];
-            meshes.push_back(processMesh(mesh, scene));        
+            meshes.push_back(processMesh(mesh, scene));
         }
 
         // recursively process node's children's meshes too
@@ -52,8 +52,30 @@ private:
 
         for (int i = 0; i < mesh->mNumVertices; ++i) {
             Vertex vertex;
-            // process vertex positions
-            // ...
+            glm::vec3 pos;
+            glm::vec3 norm;
+            glm::vec3 texcoord;
+
+            // process vertex positions (position, normal, texcoords)
+
+            pos.x = mesh->mVertices[i].x;
+            pos.y = mesh->mVertices[i].y;
+            pos.z = mesh->mVertices[i].z;
+
+            norm.x = mesh->mNormals[i].x;
+            norm.y = mesh->mNormals[i].y;
+            norm.z = mesh->mNormals[i].z;
+
+            glm::vec2 vec(0.0f, 0.0f);
+            if (mesh->mTextureCoords[0]) {
+                vec.x = mesh->mTextureCoords[0][i].x;
+                vec.y = mesh->mTextureCoords[0][i].y;
+            }
+
+            vertex.Position = pos;
+            vertex.Normal = norm;
+            vertex.TexCoords = vec;
+
             vertices.push_back(vertex);
         }
 
