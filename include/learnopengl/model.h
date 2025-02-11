@@ -17,7 +17,8 @@ private:
     std::vector<Mesh> meshes;
 
     unsigned int TextureFromFile(char *str, std::string directory) {
-                
+        // TODO !
+        // ...
     }
 
     std::vector<Texture> loadMaterialTextures(aiMaterial* material,
