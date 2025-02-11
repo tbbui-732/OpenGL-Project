@@ -15,6 +15,25 @@ private:
     std::string directory;
     std::vector<Mesh> meshes;
 
+    std::vector<Texture> loadMaterialTextures(aiMaterial* material,
+            aiTextureType type, std::string typeName)
+    {
+        std::vector<Texture> textures;
+        for (int i = 0; i < material->GetTextureCount(type); ++i) {
+            aiString str;
+            material->GetTexture(type, i, &str);
+
+            Texture texture;
+            texture.id = TextureFromFile(str.C_Str(), directory);
+            texture.type = typeName;
+            texture.path = str;
+
+            textures.push_back(texture);
+        }
+
+        return textures;
+    }
+
     void loadModel (std::string path) {
         Assimp::Importer importer;
 
@@ -92,7 +111,7 @@ private:
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
             // process diffuse maps
-            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, 
+            std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
                     aiTextureType_DIFFUSE, "texture_diffuse");
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
