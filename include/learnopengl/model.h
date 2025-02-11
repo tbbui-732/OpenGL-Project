@@ -1,3 +1,6 @@
+#ifndef MODEL_H
+#define MODEL_H
+
 //#include "assimp/Importer.hpp"
 //#include "assimp/scene.h"
 //#include "assimp/postprocess.h"
@@ -10,6 +13,7 @@
 #include "../assimp/Importer.hpp"
 #include "../assimp/scene.h"
 #include "../assimp/postprocess.h"
+#include "./mesh.h"
 
 class Model {
 private:
@@ -144,3 +148,5 @@ private:
     }
 public:
 };
+
+#endif
