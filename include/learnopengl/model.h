@@ -5,6 +5,7 @@
 // NOTE: DELETE ONCE FINISHED. FOR LSP PURPOSES
 #include <string>
 #include <iostream>
+#include "../stb_image/stb_image.h"
 
 #include "../assimp/Importer.hpp"
 #include "../assimp/scene.h"
@@ -14,6 +15,10 @@ class Model {
 private:
     std::string directory;
     std::vector<Mesh> meshes;
+
+    unsigned int TextureFromFile(char *str, std::string directory) {
+                
+    }
 
     std::vector<Texture> loadMaterialTextures(aiMaterial* material,
             aiTextureType type, std::string typeName)
