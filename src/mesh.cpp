@@ -9,6 +9,7 @@ struct Vertex {
 struct Texture {
     unsigned int id;
     std::string type; // diffuse, specular
+    std::string path;
 };
 
 class Mesh {
