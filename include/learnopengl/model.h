@@ -1,19 +1,19 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-//#include "assimp/Importer.hpp"
-//#include "assimp/scene.h"
-//#include "assimp/postprocess.h"
-
 // NOTE: DELETE ONCE FINISHED. FOR LSP PURPOSES
+// --------------------------------------------
 #include <string>
 #include <iostream>
 #include "../stb_image/stb_image.h"
+// --------------------------------------------
 
-#include "../assimp/Importer.hpp"
-#include "../assimp/scene.h"
-#include "../assimp/postprocess.h"
-#include "./mesh.h"
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+#include "mesh.h"
+
+unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
 class Model {
 private:
