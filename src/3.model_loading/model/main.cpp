@@ -1,14 +1,8 @@
-//#include "glad/glad.h"
-//#include "glfw/glfw3.h"
-//#include "learnopengl/shader.h"
-//#include "learnopengl/camera.h"
-//#include "stb_image/stb_image.h"
-
-#include "../../../include/glad/glad.h"
-#include "../../../include/glfw/glfw3.h"
-#include "../../../include/learnopengl/shader.h"
-#include "../../../include/learnopengl/camera.h"
-#include "../../../include/stb_image/stb_image.h"
+#include "glad/glad.h"
+#include "glfw/glfw3.h"
+#include "learnopengl/shader.h"
+#include "learnopengl/camera.h"
+#include "stb_image/stb_image.h"
 
 // global includes
 #include <cstdio>
@@ -45,7 +39,7 @@ typedef struct PointLight {
     Attenuation attenuation;
 } PointLight;
 
-#include "../../../include/learnopengl/theme.h"
+#include "include/learnopengl/theme.h"
 
 // declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
