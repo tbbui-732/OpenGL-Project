@@ -50,13 +50,13 @@ private:
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
 
+        // process vertex positions (position, normal, texcoords)
         for (int i = 0; i < mesh->mNumVertices; ++i) {
             Vertex vertex;
+
             glm::vec3 pos;
             glm::vec3 norm;
             glm::vec3 texcoord;
-
-            // process vertex positions (position, normal, texcoords)
 
             pos.x = mesh->mVertices[i].x;
             pos.y = mesh->mVertices[i].y;
@@ -66,7 +66,7 @@ private:
             norm.y = mesh->mNormals[i].y;
             norm.z = mesh->mNormals[i].z;
 
-            glm::vec2 vec(0.0f, 0.0f);
+            glm::vec2 vec = glm::vec2(0.0f, 0.0f);
             if (mesh->mTextureCoords[0]) {
                 vec.x = mesh->mTextureCoords[0][i].x;
                 vec.y = mesh->mTextureCoords[0][i].y;
