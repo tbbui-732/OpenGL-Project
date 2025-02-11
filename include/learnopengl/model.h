@@ -145,4 +145,45 @@ private:
 public:
 };
 
+unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false) {
+    std::string filename = directory + '/' + std::string(path);
+
+    // generate new texture id
+    unsigned int textureID;
+    glGenTexture(1, &textureID);
+
+    // load image
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
+
+    // error check
+    if (!data) {
+        std::cout << "ERROR::STBI_LOAD: Unable to load at path: " << filename << std::endl;
+        stbi_image_free(data);
+        exit(1);
+    }
+
+    // set format
+    GLenum format;
+    if (nrComponents == 1) format = GL_RED;
+    else if (nrComponents == 3) format = GL_RGB;
+    else if (nrComponents == 4) format = GL_RGBA;
+
+    // bind texture
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+
+    // mipmaps
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    // wrapping
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    return textureID;
+}
+
 #endif
