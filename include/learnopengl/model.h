@@ -1,13 +1,6 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-// NOTE: DELETE ONCE FINISHED. FOR LSP PURPOSES
-// --------------------------------------------
-#include <string>
-#include <iostream>
-#include "../stb_image/stb_image.h"
-// --------------------------------------------
-
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
