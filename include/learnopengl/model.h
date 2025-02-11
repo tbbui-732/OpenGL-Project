@@ -89,7 +89,17 @@ private:
 
         // process material
         if (mesh->mMaterialIndex >= 0) {
-            // ...
+            aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+
+            // process diffuse maps
+            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, 
+                    aiTextureType_DIFFUSE, "texture_diffuse");
+            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+            // process specular maps
+            std::vector<Texture> specularMaps = loadMaterialTextures(material,
+                    aiTextureType_SPECULAR, "texture_specular");
+            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
 
         return Mesh(vertices, indices, textures);
