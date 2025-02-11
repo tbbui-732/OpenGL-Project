@@ -1,5 +1,3 @@
-// TODO create a header file for this cpp file
-
 struct Vertex {
     glm::vec3 Position;
     glm::vec3 Normal;
