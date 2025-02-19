@@ -78,7 +78,9 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader("1.1.depth_testing.vs", "1.1.depth_testing.fs");
+    std::string shaderPath = std::string(std::filesystem::current_path()) + "/../src/4.advanced-opengl/";
+    Shader shader((shaderPath + "vert.glsl").c_str(), (shaderPath + "frag.glsl").c_str());
+    std::cout << "shaderPath: " << shaderPath << std::endl;
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -163,10 +165,9 @@ int main()
 
     // load textures
     // -------------
-    // TODO(bao): get the file path for resources
     std::string texturePath = std::filesystem::current_path();
-    unsigned int cubeTexture  = loadTexture(FileSystem::getPath("resources/textures/marble.jpg").c_str());
-    unsigned int floorTexture = loadTexture(FileSystem::getPath("resources/textures/metal.png").c_str());
+    unsigned int cubeTexture  = loadTexture((texturePath + "/../resources/textures/marble.jpg").c_str());
+    unsigned int floorTexture = loadTexture((texturePath + "/../resources/textures/metal.png").c_str());
 
     // shader configuration
     // --------------------
