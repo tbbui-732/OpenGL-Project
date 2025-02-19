@@ -8,9 +8,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Executables
-set(CHAPTER "3.model_loading") # NOTE: update this depending on the chapter being built!
-set(SUBCHAPTER "model")
-add_executable(${PROJECT_NAME} src/${CHAPTER}/${SUBCHAPTER}/main.cpp src/glad.c src/stb_image.c)
+set(CHAPTER "4.advanced-opengl") # NOTE: update this depending on the chapter being built!
+add_executable(${PROJECT_NAME} src/${CHAPTER}/main.cpp src/glad.c src/stb_image.c)
+#set(SUBCHAPTER "model")
+#add_executable(${PROJECT_NAME} src/${CHAPTER}/${SUBCHAPTER}/main.cpp src/glad.c src/stb_image.c)
 
 # Libraries
 set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
