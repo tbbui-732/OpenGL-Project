@@ -79,7 +79,8 @@ int main()
     // build and compile shaders
     // -------------------------
     std::string shaderPath = std::string(std::filesystem::current_path()) + "/../src/4.advanced-opengl/";
-    Shader shader((shaderPath + "vert.glsl").c_str(), (shaderPath + "frag.glsl").c_str());
+    Shader objectShader((shaderPath + "object.vert").c_str(), (shaderPath + "object.frag").c_str());
+    Shader borderShader((shaderPath + "object.vert").c_str(), (shaderPath + "border.frag").c_str());
     std::cout << "shaderPath: " << shaderPath << std::endl;
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
