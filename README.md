@@ -1,6 +1,6 @@
-# LearnOpenGL Text
+# OpenGL Project
 
-Welcome to my LearnOpenGL repository! This repo is dedicated to documenting and showcasing my progress as I work through the LearnOpenGL text. My goal is to build a strong foundation in graphics programming. 
+Welcome! This repo is dedicated to documenting and showcasing my progress as I work through the LearnOpenGL text. My goal is to build a strong foundation in graphics programming. 
 
 ## About
 This repository serves as a collection of projects and experimentation from the LearnOpenGL text. It's a work-in-progress as I progress through each chapter.
