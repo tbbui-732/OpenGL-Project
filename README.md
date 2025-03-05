@@ -15,6 +15,12 @@ Completed Part 1: Basic OpenGL, which covers foundational graphics concepts.
 
 Completed Part 2: Basic Lights, which covers phong-lighting, diffuse/specular maps, and combining multiple types of lights
 
+Completed Part 3: Loading in complex 3D models with Assimp
+
+Currently working on Part 4: Advanced OpenGL
+* Stencil buffers
+* Depth testing
+
 
 <img width="720" alt="THEME=FACTORY" src="https://github.com/user-attachments/assets/0bd9cceb-abe9-4e37-8292-cfce38069ca3" />
 <img width="720" alt="THEME=HORROR" src="https://github.com/user-attachments/assets/42de1253-473a-47fe-8934-93603d1d2ddd" />
