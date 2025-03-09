@@ -1,14 +1,9 @@
-//#include "glad/glad.h"
-//#include "glfw/glfw3.h"
-//#include "learnopengl/shader.h"
-//#include "learnopengl/camera.h"
-//#include "stb_image/stb_image.h"
-
-#include "../../../include/glad/glad.h"
-#include "../../../include/glfw/glfw3.h"
-#include "../../../include/learnopengl/shader.h"
-#include "../../../include/learnopengl/camera.h"
-#include "../../../include/stb_image/stb_image.h"
+// local includes
+#include "glad/glad.h"
+#include "glfw/glfw3.h"
+#include "learnopengl/shader.h"
+#include "learnopengl/camera.h"
+#include "stb_image/stb_image.h"
 
 // global includes
 #include <cstdio>
