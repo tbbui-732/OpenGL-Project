@@ -54,18 +54,21 @@ class Mesh {
                 string number;
                 string name = textures[i].type;
                 switch (name) {
-                    case "texture_diffuse":
-                        number = std::to_string(diffuseNr++);
-                        break;
-                    case "texture_specular":
-                        number = std::to_string(specularNr++);
-                        break;
-                    case "texture_normal":
-                        number = std::to_string(normalNr++);
-                        break;
+                    case "texture_diffuse": {
+                        number = diffuseNr;
+                        diffuseNr++;
+                    } break;
+                    case "texture_specular": {
+                        number = specularNr;
+                        specularNr++;
+                    } break;
+                    case "texture_normal": {
+                        number = normalNr;
+                        normalNr++;
+                    } break;
                 }
                 // now set the sampler to the correct texture unit
-                glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+                glUniform1i(glGetUniformLocation(shader.ID, (name + std::to_string(number)).c_str()), i);
                 // and finally bind the texture
                 glBindTexture(GL_TEXTURE_2D, textures[i].id);
             }
