@@ -63,9 +63,6 @@ class Mesh {
                     case "texture_normal":
                         number = std::to_string(normalNr++);
                         break;
-                    case "texture_height":
-                        number = std::to_string(heightNr++);
-                        break;
                 }
                 // now set the sampler to the correct texture unit
                 glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
@@ -94,11 +91,11 @@ class Mesh {
             glGenBuffers(1, &EBO);
 
             glBindVertexArray(VAO);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
             // NOTE: A great thing about structs is that their memory layout is sequential for all its items.
             //          The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
             //          again translates to 3/2 floats which translates to a byte array.
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
