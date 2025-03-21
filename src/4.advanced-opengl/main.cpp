@@ -71,16 +71,18 @@ int main()
         return -1;
     }
 
-    // configure global opengl state
-    // -----------------------------
+    // global states
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // build and compile shaders
     // -------------------------
     std::string shaderPath = std::string(std::filesystem::current_path()) + "/../src/4.advanced-opengl/";
     Shader shader((shaderPath + "vert.glsl").c_str(), (shaderPath + "frag.glsl").c_str());
-    std::cout << "shaderPath: " << shaderPath << std::endl;
+    Shader borderShader((shaderPath + "vert.glsl").c_str(), (shaderPath + "borderFrag.glsl").c_str());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -191,31 +193,72 @@ int main()
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        shader.use();
-        glm::mat4 model = glm::mat4(1.0f);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // ensures all fragments pass the stencil test
+
+        // set uniforms
+        glm::mat4 model;
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+        borderShader.use();
+        borderShader.setMat4("view", view);
+        borderShader.setMat4("projection", projection);
+
+        shader.use();
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
+
+        // floor
+        glStencilMask(0x00);
+        glBindVertexArray(planeVAO);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        model = glm::mat4(1.0f);
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
         // cubes
+        glStencilFunc(GL_ALWAYS, 1, 0xFF); // enable writing to stencil buffer
+        glStencilMask(0xFF);
+
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture); 	
+        model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
         shader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, 36); // first cube
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         shader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        // floor
-        glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
-        shader.setMat4("model", glm::mat4(1.0f));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
+
+        // scaled-cubes (for stencil outlining)
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // draw parts of the container outside of the previously drawn cube
+        glStencilMask(0x00); // disable writing to stencil buffer
+        glDisable(GL_DEPTH_TEST);
+
+        borderShader.use();
+        glBindVertexArray(cubeVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture); 	
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        model = glm::scale(model, glm::vec3(1.1f));
+        borderShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36); // first cube
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.1f));
+        borderShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
         glBindVertexArray(0);
+
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glEnable(GL_DEPTH_TEST);
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -292,8 +335,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const *path)
-{
+unsigned int loadTexture(char const *path) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
