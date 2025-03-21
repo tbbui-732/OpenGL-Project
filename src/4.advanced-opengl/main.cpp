@@ -245,12 +245,12 @@ int main()
         glBindTexture(GL_TEXTURE_2D, cubeTexture); 	
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        model = glm::scale(model, glm::vec3(1.2f)); // 20% larger
+        model = glm::scale(model, glm::vec3(1.1f)); // 20% larger
         borderShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36); // first cube
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.2f)); // 20% larger
+        model = glm::scale(model, glm::vec3(1.1f)); // 20% larger
         borderShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
         glBindVertexArray(0);
@@ -335,8 +335,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const *path)
-{
+unsigned int loadTexture(char const *path) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
