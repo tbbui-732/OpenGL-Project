@@ -234,7 +234,7 @@ int main()
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
 
-        // scaled-cubes
+        // scaled-cubes (for stencil outlining)
         glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // draw parts of the container outside of the previously drawn cube
         glStencilMask(0x00); // disable writing to stencil buffer
         glDisable(GL_DEPTH_TEST);
@@ -245,12 +245,12 @@ int main()
         glBindTexture(GL_TEXTURE_2D, cubeTexture); 	
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        model = glm::scale(model, glm::vec3(1.1f)); // 20% larger
+        model = glm::scale(model, glm::vec3(1.1f));
         borderShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36); // first cube
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.1f)); // 20% larger
+        model = glm::scale(model, glm::vec3(1.1f));
         borderShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
         glBindVertexArray(0);
