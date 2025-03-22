@@ -139,6 +139,15 @@ int main() {
         -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
         5.0f, -0.5f, -5.0f,  2.0f, 2.0f								
     };
+    float grassVertices[] = {
+        // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+        1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+    };
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -169,7 +178,7 @@ int main() {
     glGenBuffers(1, &vegetationVBO);
     glBindVertexArray(vegetationVAO);
     glBindBuffer(GL_ARRAY_BUFFER, vegetationVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), &grassVertices, GL_STATIC_DRAW); // TODO(bao): create grass vertices
+    glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), &grassVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
@@ -189,6 +198,7 @@ int main() {
     std::string texturePath = std::filesystem::current_path();
     unsigned int cubeTexture  = loadTexture((texturePath + "/../resources/textures/marble.jpg").c_str());
     unsigned int floorTexture = loadTexture((texturePath + "/../resources/textures/metal.png").c_str());
+    unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/grass.png").c_str());
 
     // shader configuration
     // --------------------
