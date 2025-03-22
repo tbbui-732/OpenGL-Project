@@ -72,6 +72,7 @@ int main() {
 
     // global states
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
     glDepthFunc(GL_LESS);
     //glEnable(GL_STENCIL_TEST);
     //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
