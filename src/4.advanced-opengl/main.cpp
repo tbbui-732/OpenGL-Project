@@ -17,7 +17,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
-unsigned int loadTexture(const char *path);
+unsigned int loadTexture(char const *path, bool cull_transparent);
 
 // settings
 const unsigned int SCR_WIDTH = 1600;
@@ -196,9 +196,9 @@ int main() {
     // load textures
     // -------------
     std::string texturePath = std::filesystem::current_path();
-    unsigned int cubeTexture  = loadTexture((texturePath + "/../resources/textures/marble.jpg").c_str());
-    unsigned int floorTexture = loadTexture((texturePath + "/../resources/textures/metal.png").c_str());
-    unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/grass.png").c_str());
+    unsigned int cubeTexture  = loadTexture((texturePath + "/../resources/textures/marble.jpg").c_str(), false);
+    unsigned int floorTexture = loadTexture((texturePath + "/../resources/textures/metal.png").c_str(), false);
+    unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/grass.png").c_str(), true);
 
     // shader configuration
     // --------------------
@@ -374,7 +374,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const *path) {
+unsigned int loadTexture(char const *path, bool cull_transparent) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
@@ -393,9 +393,14 @@ unsigned int loadTexture(char const *path) {
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        
+        if (cull_transparent) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        } else {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        }
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
