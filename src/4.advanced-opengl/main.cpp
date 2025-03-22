@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <map>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -74,6 +75,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glDepthFunc(GL_LESS);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glEnable(GL_STENCIL_TEST);
     //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -199,7 +201,8 @@ int main() {
     std::string texturePath = std::filesystem::current_path();
     unsigned int cubeTexture  = loadTexture((texturePath + "/../resources/textures/marble.jpg").c_str(), false);
     unsigned int floorTexture = loadTexture((texturePath + "/../resources/textures/metal.png").c_str(), false);
-    unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/grass.png").c_str(), true);
+    //unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/grass.png").c_str(), true);
+    unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/blending_transparent_window.png").c_str(), true);
 
     // shader configuration
     // --------------------
@@ -208,8 +211,7 @@ int main() {
 
     // render loop
     // -----------
-    while(!glfwWindowShouldClose(window))
-    {
+    while(!glfwWindowShouldClose(window)) {
         // per-frame time logic
         // --------------------
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -249,14 +251,14 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // vegetation
-        glBindVertexArray(vegetationVAO);
-        glBindTexture(GL_TEXTURE_2D, grassTexture);
-        for (unsigned int i = 0; i < vegetation.size(); i++) {
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, vegetation[i]);
-            shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
+        //glBindVertexArray(vegetationVAO);
+        //glBindTexture(GL_TEXTURE_2D, grassTexture);
+        //for (unsigned int i = 0; i < vegetation.size(); i++) {
+        //    model = glm::mat4(1.0f);
+        //    model = glm::translate(model, vegetation[i]);
+        //    shader.setMat4("model", model);
+        //    glDrawArrays(GL_TRIANGLES, 0, 6);
+        //}
 
         // cubes
         //glStencilFunc(GL_ALWAYS, 1, 0xFF); // enable writing to stencil buffer
@@ -298,6 +300,22 @@ int main() {
         //glStencilMask(0xFF);
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
+
+        // windows
+        std::map<float, glm::vec3> sortedWindows;
+        for (unsigned int i = 0; i < vegetation.size(); i++) {
+            float distance = glm::length(camera.Position - vegetation[i]);
+            sortedWindows[distance] = vegetation[i];
+        }
+        glBindVertexArray(vegetationVAO);
+        glBindTexture(GL_TEXTURE_2D, grassTexture);
+        for (std::map<float, glm::vec3>::reverse_iterator it = sortedWindows.rbegin(); it != sortedWindows.rend(); it++) {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, it->second);
+            shader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
