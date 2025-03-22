@@ -73,9 +73,9 @@ int main() {
     // global states
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glEnable(GL_STENCIL_TEST);
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    //glEnable(GL_STENCIL_TEST);
+    //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // build and compile shaders
     // -------------------------
@@ -214,7 +214,7 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // ensures all fragments pass the stencil test
+        //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // ensures all fragments pass the stencil test
 
         // set uniforms
         glm::mat4 model;
@@ -230,16 +230,26 @@ int main() {
         shader.setMat4("projection", projection);
 
         // floor
-        glStencilMask(0x00);
+        //glStencilMask(0x00);
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         model = glm::mat4(1.0f);
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
+        // vegetation
+        glBindVertexArray(vegetationVAO);
+        glBindTexture(GL_TEXTURE_2D, grassTexture);
+        for (unsigned int i = 0; i < vegetation.size(); i++) {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, vegetation[i]);
+            shader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+
         // cubes
-        glStencilFunc(GL_ALWAYS, 1, 0xFF); // enable writing to stencil buffer
-        glStencilMask(0xFF);
+        //glStencilFunc(GL_ALWAYS, 1, 0xFF); // enable writing to stencil buffer
+        //glStencilMask(0xFF);
 
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
@@ -254,29 +264,29 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
 
         // scaled-cubes (for stencil outlining)
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // draw parts of the container outside of the previously drawn cube
-        glStencilMask(0x00); // disable writing to stencil buffer
-        glDisable(GL_DEPTH_TEST);
+        //glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // draw parts of the container outside of the previously drawn cube
+        //glStencilMask(0x00); // disable writing to stencil buffer
+        //glDisable(GL_DEPTH_TEST);
 
-        borderShader.use();
-        glBindVertexArray(cubeVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture); 	
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        model = glm::scale(model, glm::vec3(1.1f));
-        borderShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36); // first cube
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.1f));
-        borderShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
-        glBindVertexArray(0);
+        //borderShader.use();
+        //glBindVertexArray(cubeVAO);
+        //glActiveTexture(GL_TEXTURE0);
+        //glBindTexture(GL_TEXTURE_2D, cubeTexture); 	
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        //model = glm::scale(model, glm::vec3(1.1f));
+        //borderShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36); // first cube
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        //model = glm::scale(model, glm::vec3(1.1f));
+        //borderShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
+        //glBindVertexArray(0);
 
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);
-        glEnable(GL_DEPTH_TEST);
+        //glStencilMask(0xFF);
+        //glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        //glEnable(GL_DEPTH_TEST);
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
