@@ -20,12 +20,17 @@ Completed Part 3: Loading in complex 3D models with Assimp
 Currently working on Part 4: Advanced OpenGL
 * Stencil buffers
 * Depth testing
+* Blending
+* Face culling
 
+Here are some screenshots from the basic-lights chapter
 
-<img width="720" alt="THEME=FACTORY" src="https://github.com/user-attachments/assets/0bd9cceb-abe9-4e37-8292-cfce38069ca3" />
-<img width="720" alt="THEME=HORROR" src="https://github.com/user-attachments/assets/42de1253-473a-47fe-8934-93603d1d2ddd" />
-<img width="720" alt="THEME=NORMAL" src="https://github.com/user-attachments/assets/b424957a-7846-4860-8471-8d06bc6edda4" />
-<img width="720" alt="THEME=NORMALDIMMED" src="https://github.com/user-attachments/assets/4412806e-2c26-493b-aa1a-d1145f94b568" />
+<img width="580" alt="THEME=FACTORY" src="https://github.com/user-attachments/assets/0bd9cceb-abe9-4e37-8292-cfce38069ca3" />
+<img width="580" alt="THEME=HORROR" src="https://github.com/user-attachments/assets/42de1253-473a-47fe-8934-93603d1d2ddd" />
+<img width="580" alt="THEME=NORMALDIMMED" src="https://github.com/user-attachments/assets/4412806e-2c26-493b-aa1a-d1145f94b568" />
+
+Here's the transparent windows from the advanced-opengl section
+<img width="720" alt="transparent-window" src="https://github.com/user-attachments/assets/76031bc0-6819-439c-85a0-80b5b64647fb" />
 
 ## Features
 * Writen in C++
