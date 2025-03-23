@@ -244,6 +244,7 @@ int main() {
 
         // floor
         //glStencilMask(0x00);
+        glDisable(GL_CULL_FACE);
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         model = glm::mat4(1.0f);
@@ -264,6 +265,7 @@ int main() {
         //glStencilFunc(GL_ALWAYS, 1, 0xFF); // enable writing to stencil buffer
         //glStencilMask(0xFF);
 
+        glEnable(GL_CULL_FACE);
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
@@ -302,6 +304,7 @@ int main() {
         //glEnable(GL_DEPTH_TEST);
 
         // windows
+        glDisable(GL_CULL_FACE);
         std::map<float, glm::vec3> sortedWindows;
         for (unsigned int i = 0; i < vegetation.size(); i++) {
             float distance = glm::length(camera.Position - vegetation[i]);
