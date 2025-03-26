@@ -187,7 +187,6 @@ int main() {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
-
     // vegetation positions
     std::vector<glm::vec3> vegetation;
     vegetation.push_back(glm::vec3(-1.5f,  0.0f, -0.48f));
@@ -195,6 +194,15 @@ int main() {
     vegetation.push_back(glm::vec3( 0.0f,  0.0f,  0.7f));
     vegetation.push_back(glm::vec3(-0.3f,  0.0f, -2.3f));
     vegetation.push_back(glm::vec3( 0.5f,  0.0f, -0.6f));
+    // framebuffer object
+    unsigned int fbo;
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "ERROR::FRAMEBUFFER::Framebuffer is incomplete!\n";
+        return -1;
+    }
+
 
     // load textures
     // -------------
@@ -203,6 +211,15 @@ int main() {
     unsigned int floorTexture = loadTexture((texturePath + "/../resources/textures/metal.png").c_str(), false);
     //unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/grass.png").c_str(), true);
     unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/blending_transparent_window.png").c_str(), true);
+
+    // texture for framebuffer (note how similar it is to creating a regular texture)
+    unsigned int framebuffer_texture;
+    glGenTexture(1, &framebuffer_texture);
+    glBindTexture(GL_TEXTURE_2D, framebuffer_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL); // same as the screen dimension
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer_texture, 0); // attach texture to framebuffer
 
     // shader configuration
     // --------------------
@@ -319,8 +336,6 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
-
-
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
@@ -333,6 +348,7 @@ int main() {
     glDeleteVertexArrays(1, &planeVAO);
     glDeleteBuffers(1, &cubeVBO);
     glDeleteBuffers(1, &planeVBO);
+    glDeleteFramebuffers(1, &fbo);
 
     glfwTerminate();
     return 0;
