@@ -49,8 +49,7 @@ int main() {
     // glfw window creation
     // --------------------
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -65,8 +64,7 @@ int main() {
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -85,6 +83,7 @@ int main() {
     std::string shaderPath = std::string(std::filesystem::current_path()) + "/../src/4.advanced-opengl/";
     Shader shader((shaderPath + "vert.glsl").c_str(), (shaderPath + "frag.glsl").c_str());
     Shader borderShader((shaderPath + "vert.glsl").c_str(), (shaderPath + "borderFrag.glsl").c_str());
+    Shader screenShader((shaderPath + "screenVert.glsl").c_str(), (shaderPath + "screenFrag.glsl").c_str());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -151,7 +150,18 @@ int main() {
         1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
         1.0f,  0.5f,  0.0f,  1.0f,  0.0f
     };
-    // cube VAO
+    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    // CUBE VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
@@ -163,7 +173,8 @@ int main() {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
-    // plane VAO
+
+    // PLANE VAO
     unsigned int planeVAO, planeVBO;
     glGenVertexArrays(1, &planeVAO);
     glGenBuffers(1, &planeVBO);
@@ -175,7 +186,21 @@ int main() {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
-    // vegetation VAO
+
+    // QUAD VAO
+    unsigned int quadVAO, quadVBO;
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glBindVertexArray(0);
+
+    // VEGETATION VAO
     unsigned int vegetationVAO, vegetationVBO;
     glGenVertexArrays(1, &vegetationVAO);
     glGenBuffers(1, &vegetationVBO);
@@ -188,13 +213,40 @@ int main() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
 
-    // vegetation positions
+    // VEGETATION POSITIONS
     std::vector<glm::vec3> vegetation;
     vegetation.push_back(glm::vec3(-1.5f,  0.0f, -0.48f));
     vegetation.push_back(glm::vec3( 1.5f,  0.0f,  0.51f));
     vegetation.push_back(glm::vec3( 0.0f,  0.0f,  0.7f));
     vegetation.push_back(glm::vec3(-0.3f,  0.0f, -2.3f));
     vegetation.push_back(glm::vec3( 0.5f,  0.0f, -0.6f));
+
+    // FRAMEBUFFER OBJECT
+    unsigned int framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    // texture for framebuffer (note how similar it is to creating a regular texture)
+    unsigned int textureColorbuffer;
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH*2, SCR_HEIGHT*2, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL); // same as the screen dimension
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0); // attach texture to framebuffer
+    // render buffer object (for depth and stencil buffer attachments)
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    // create depth and stencil renderbuffer object
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH*2, SCR_HEIGHT*2);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+    // check if frame buffer is complete
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "ERROR::FRAMEBUFFER::Framebuffer is incomplete!\n";
+        return -1;
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // unbind to prevent accidentally rendering to the wrong framebuffer
+
 
     // load textures
     // -------------
@@ -203,11 +255,16 @@ int main() {
     unsigned int floorTexture = loadTexture((texturePath + "/../resources/textures/metal.png").c_str(), false);
     //unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/grass.png").c_str(), true);
     unsigned int grassTexture = loadTexture((texturePath + "/../resources/textures/blending_transparent_window.png").c_str(), true);
+    unsigned int containerTexture = loadTexture((texturePath + "/../resources/textures/container.jpg").c_str(), false);
 
     // shader configuration
     // --------------------
     shader.use();
     shader.setInt("texture1", 0);
+
+    screenShader.use();
+    screenShader.setInt("screenTexture", 0);
+
 
     // render loop
     // -----------
@@ -224,6 +281,9 @@ int main() {
 
         // render
         // ------
+        // render to a framebuffer 
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glEnable(GL_DEPTH_TEST);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -260,6 +320,7 @@ int main() {
         //    shader.setMat4("model", model);
         //    glDrawArrays(GL_TRIANGLES, 0, 6);
         //}
+        //
 
         // cubes
         //glStencilFunc(GL_ALWAYS, 1, 0xFF); // enable writing to stencil buffer
@@ -278,7 +339,7 @@ int main() {
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36); // second cube
 
-        // scaled-cubes (for stencil outlining)
+        // scaled-cubes (FOR STENCIL OUTLINING)
         //glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // draw parts of the container outside of the previously drawn cube
         //glStencilMask(0x00); // disable writing to stencil buffer
         //glDisable(GL_DEPTH_TEST);
@@ -303,8 +364,9 @@ int main() {
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
 
-        // windows
+        // draw windows
         glDisable(GL_CULL_FACE);
+        // ensures that background windows are rendered
         std::map<float, glm::vec3> sortedWindows;
         for (unsigned int i = 0; i < vegetation.size(); i++) {
             float distance = glm::length(camera.Position - vegetation[i]);
@@ -319,6 +381,17 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
+        // swap back to default framebuffer and draw a quad with the framebuffer texture
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST); // prevents quad from being disabled due to depth testing
+        // clear relevant buffers
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // render the quad
+        screenShader.use();
+        glBindVertexArray(quadVAO);
+        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -333,6 +406,7 @@ int main() {
     glDeleteVertexArrays(1, &planeVAO);
     glDeleteBuffers(1, &cubeVBO);
     glDeleteBuffers(1, &planeVBO);
+    glDeleteFramebuffers(1, &framebuffer);
 
     glfwTerminate();
     return 0;

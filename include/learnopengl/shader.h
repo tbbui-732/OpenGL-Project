@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <cstddef>
 
 const std::string RED = "\033[1;31m";
 const std::string WHITE = "\033[0m";
@@ -17,9 +18,10 @@ public:
 	Shader(const char* vertexPath, const char* fragmentPath) {
 		// 1. retrieve source code from file paths
 		std::string vertexCodeStr, fragmentCodeStr;
+                std::string vertexFileName, fragmentFileName;
 		std::ifstream vertexFile, fragmentFile;
 		vertexFile.exceptions	(std::ifstream::failbit | std::ifstream::badbit);
-        fragmentFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+                fragmentFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
 		try {
 			// open files
@@ -38,6 +40,14 @@ public:
 			// convert stream into string
 			vertexCodeStr = vertexStream.str();
 			fragmentCodeStr = fragmentStream.str();
+
+                        // store the filenames
+                        std::string vertexPathStr(vertexPath);
+                        std::string fragmentPathStr(fragmentPath);
+                        std::size_t vertexFound = vertexPathStr.find_last_of("/\\");
+                        std::size_t fragmentFound = fragmentPathStr.find_last_of("/\\");
+                        vertexFileName = vertexPathStr.substr(vertexFound+1);
+                        fragmentFileName = fragmentPathStr.substr(fragmentFound+1);
 		} 
 		catch (std::ifstream::failure e) {
 			std::cout << RED << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << WHITE << std::endl;
@@ -58,8 +68,8 @@ public:
 		glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(vertex, 512, NULL, log);
-			std::cout << RED << "ERROR::VERTEX::SHADER::COMPILATION_FAILED"
-				<< log << WHITE << std::endl;
+			std::cout << RED << "ERROR::VERTEX::SHADER::COMPILATION_FAILED: "
+				<< log  << " in file " << vertexFileName << WHITE << std::endl;
 		}
 
 		// fragment shader
@@ -69,8 +79,8 @@ public:
 		glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(fragment, 512, NULL, log);
-			std::cout << RED << "ERROR::FRAGMENT::SHADER::COMPILATION_FAILED"
-				<< log << WHITE << std::endl;
+			std::cout << RED << "ERROR::FRAGMENT::SHADER::COMPILATION_FAILED: "
+				<< log << " in file " << fragmentFileName << WHITE << std::endl;
 		}
 
 		// 3. shader program
@@ -81,7 +91,7 @@ public:
 		glGetProgramiv(ID, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetProgramInfoLog(ID, 512, NULL, log);
-			std::cout << RED << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+			std::cout << RED << "ERROR::SHADER::PROGRAM::LINKING_FAILED: "
 				<< log << WHITE << std::endl;
 		}
 
