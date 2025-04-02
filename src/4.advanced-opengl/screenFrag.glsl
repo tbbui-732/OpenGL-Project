@@ -5,7 +5,7 @@ in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
 
-const float offset = 1.0 / 900.0;
+const float offset = 1.0 / 300.0;
 
 void main() {
     // basic
@@ -58,7 +58,7 @@ void main() {
     }
     vec3 col = vec3(0.0);
     for (int i = 0; i < 9; ++i) {
-        col += sampleTexture[i] * ridgeKernel[i];
+        col += sampleTexture[i] * gaussianBlur[i]; // NOTE(bao): CHANGE KERNEL MATRIX HERE~!
     }
     FragColor = vec4(col, 1.0);
 }
