@@ -1,6 +1,6 @@
 # OpenGL Project
 
-Welcome! This repo is dedicated to documenting and showcasing my progress as I work through the LearnOpenGL text. My goal is to build a strong foundation in graphics programming. 
+Welcome! This repo is dedicated to documenting and showcasing my progress as I work through the LearnOpenGL text. My goal is to build a strong foundation in graphics programming via OpenGL.
 
 ## About
 This repository serves as a collection of projects and experimentation from the LearnOpenGL text. It's a work-in-progress as I progress through each chapter.
@@ -22,15 +22,20 @@ Currently working on Part 4: Advanced OpenGL
 * Depth testing
 * Blending
 * Face culling
+* Framebuffers
 
-Here are some screenshots from the basic-lights chapter
+Here are some themes I created in the basic lighting chapter:
 
-<img width="580" alt="THEME=FACTORY" src="https://github.com/user-attachments/assets/0bd9cceb-abe9-4e37-8292-cfce38069ca3" />
-<img width="580" alt="THEME=HORROR" src="https://github.com/user-attachments/assets/42de1253-473a-47fe-8934-93603d1d2ddd" />
-<img width="580" alt="THEME=NORMALDIMMED" src="https://github.com/user-attachments/assets/4412806e-2c26-493b-aa1a-d1145f94b568" />
+<img width="480" alt="factory" src="https://github.com/tbbui-732/OpenGL-Project/blob/main/public/Basic%20Lighting/factory.png" /> (factory)
+<img width="480" alt="horror" src="https://github.com/tbbui-732/OpenGL-Project/blob/main/public/Basic%20Lighting/horror.png" /> (horror)
+<img width="480" alt="dimmed" src="https://github.com/tbbui-732/OpenGL-Project/blob/main/public/Basic%20Lighting/dimmed.png" /> (dimmed)
 
-Here's the transparent windows from the advanced-opengl section
-<img width="720" alt="transparent-window" src="https://github.com/user-attachments/assets/76031bc0-6819-439c-85a0-80b5b64647fb" />
+Here's the transparent windows (blending subchapter) with different preprocessing effects using kernel matrices and framebuffers + textures. 
+
+<img width="480" alt="identity" src="https://github.com/tbbui-732/OpenGL-Project/blob/main/public/Kernel%20Matrix%20Preprocessing/identity.png" /> (Identity kernel)
+<img width="480" alt="ridge" src="https://github.com/tbbui-732/OpenGL-Project/blob/main/public/Kernel%20Matrix%20Preprocessing/ridge.png" /> (Ridge kernel)
+<img width="480" alt="sharpen" src="https://github.com/tbbui-732/OpenGL-Project/blob/main/public/Kernel%20Matrix%20Preprocessing/sharpen.png" /> (Sharpen kernel)
+<img width="480" alt="gaussian blur" src="https://github.com/tbbui-732/OpenGL-Project/blob/main/public/Kernel%20Matrix%20Preprocessing/gaussian-blur.png" /> (Gaussian blur)
 
 ## Features
 * Writen in C++
